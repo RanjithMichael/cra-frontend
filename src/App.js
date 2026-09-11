@@ -21,7 +21,7 @@ function App() {
       <div className="min-h-screen bg-gray-900 text-white flex flex-col">
         <header className="text-center py-6 space-y-4">
           <h1 className="text-4xl font-bold text-blue-400">Car Rental App</h1>
-          <p className="text-lg">🚗 Powered by React + TailwindCSS</p>
+          
 
           {/* Navigation */}
           <nav className="space-x-4">
