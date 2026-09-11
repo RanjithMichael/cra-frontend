@@ -27,27 +27,43 @@ export default function Register() {
         className="bg-white p-8 rounded shadow-md w-96"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+
+        <label htmlFor="name" className="sr-only">Name</label>
         <input
           type="text"
+          id="name"
+          name="name"
           placeholder="Name"
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-4 border rounded text-black placeholder-gray-400"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
+
+        <label htmlFor="email" className="sr-only">Email</label>
         <input
           type="email"
+          id="email"
+          name="email"
           placeholder="Email"
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-4 border rounded text-black placeholder-gray-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
+
+        <label htmlFor="password" className="sr-only">Password</label>
         <input
           type="password"
+          id="password"
+          name="password"
           placeholder="Password"
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-4 border rounded text-black placeholder-gray-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
+
         <button
           type="submit"
           className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
@@ -58,3 +74,4 @@ export default function Register() {
     </div>
   );
 }
+

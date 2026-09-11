@@ -26,20 +26,31 @@ export default function Login() {
         className="bg-white p-8 rounded shadow-md w-96"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+
+        <label htmlFor="email" className="sr-only">Email</label>
         <input
           type="email"
+          id="email"
+          name="email"
           placeholder="Email"
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-4 border rounded text-black placeholder-gray-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
+
+        <label htmlFor="password" className="sr-only">Password</label>
         <input
           type="password"
+          id="password"
+          name="password"
           placeholder="Password"
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-4 border rounded text-black placeholder-gray-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
@@ -50,3 +61,4 @@ export default function Login() {
     </div>
   );
 }
+
