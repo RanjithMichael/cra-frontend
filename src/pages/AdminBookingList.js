@@ -8,7 +8,7 @@ export default function AdminBookingList() {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/admin/bookings", {
+        const res = await axios.get("http://localhost:5000/api/bookings/admin", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBookings(res.data);

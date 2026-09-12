@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useState } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CarList from "./pages/CarList";
@@ -7,12 +8,14 @@ import BookingList from "./pages/BookingList";
 import AdminBookingList from "./pages/AdminBookingList";
 
 function App() {
-  const role = localStorage.getItem("role");
-  const token = localStorage.getItem("token");
+  const [role, setRole] = useState(localStorage.getItem("role"));
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    setToken(null);
+    setRole(null);
     window.location.href = "/login"; // redirect to login
   };
 

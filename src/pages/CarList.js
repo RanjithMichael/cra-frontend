@@ -30,6 +30,19 @@ export default function CarList() {
             key={car._id}
             className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition"
           >
+            {/* Car Image */}
+            {car.image ? (
+              <img
+                src={car.image}
+                alt={`${car.make} ${car.model}`}
+                className="w-full h-40 object-cover rounded mb-4"
+              />
+            ) : (
+              <div className="w-full h-40 bg-gray-300 flex items-center justify-center rounded mb-4">
+                <span className="text-gray-600">No Image Available</span>
+              </div>
+            )}
+
             <h2 className="text-xl font-semibold mb-2">
               {car.make} {car.model}
             </h2>

@@ -14,19 +14,21 @@ export default function Login() {
         email,
         password,
       });
+      console.log("Login response:",res.data);
 
       // Save token + role in localStorage
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.user.role); // backend should send role
+      localStorage.setItem("role", res.data.role); // backend should send role
 
       alert("Login successful!");
 
       // Redirect based on role
-      if (res.data.user.role === "admin") {
+      if (res.data.role === "admin") {
         navigate("/admin/bookings");
       } else {
         navigate("/cars");
       }
+      window.location.reload();
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }
