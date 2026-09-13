@@ -11,6 +11,7 @@ export default function BookingList() {
         const res = await axios.get("http://localhost:5000/api/bookings", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("Bookings data:", res.data);
         setBookings(res.data);
       } catch (err) {
         alert(err.response?.data?.message || "Failed to load bookings");
@@ -41,9 +42,7 @@ export default function BookingList() {
         { bookingId: booking._id, amount: booking.payment.amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      // Example: redirect to Stripe Checkout
-      window.location.href = res.data.checkoutUrl;
+      window.location.href = res.data.checkoutUrl; // redirect to Stripe Checkout
     } catch (err) {
       alert(err.response?.data?.message || "Payment failed");
     }
@@ -58,13 +57,30 @@ export default function BookingList() {
         <div className="space-y-4">
           {bookings.map((b) => (
             <div key={b._id} className="border rounded p-4 bg-white shadow">
-              <h3 className="text-lg font-semibold">{b.car?.name || "Car"}</h3>
-              <p>Start: {new Date(b.startDate).toLocaleDateString()}</p>
-              <p>End: {new Date(b.endDate).toLocaleDateString()}</p>
-              <p>Status: {b.status}</p>
-              <p>Amount: ${b.payment?.amount} {b.payment?.currency}</p>
-              <p>Payment Status: {b.payment?.status}</p>
+              {/* Car details */}
+              <h3 className="text-lg font-semibold">
+                {b.car ? `${b.car.make} ${b.car.model}` : "Car"}
+              </h3>
+              <p><strong>Year:</strong> {b.car?.year}</p>
+              <p><strong>Price/Day:</strong> ₹{b.car?.pricePerDay}</p>
+              <p>Available: {b.car?.available ? "Yes" : "No"}</p>
+              {b.car?.image && (
+               <img
+                src={b.car.image}
+                alt={`${b.car.make} ${b.car.model}`}
+                className="w-full h-32 object-cover rounded mt-2"
+              />
+              )}
+              {/* Booking details */}
+              <p><strong>Start:</strong> {new Date(b.startDate).toLocaleDateString()}</p>
+              <p><strong>End:</strong> {new Date(b.endDate).toLocaleDateString()}</p>
+              <p><strong>Status:</strong> {b.status}</p>
 
+              {/* Payment details */}
+              <p><strong>Amount:</strong> ${b.payment?.amount} {b.payment?.currency}</p>
+              <p><strong>Payment Status:</strong> {b.payment?.status}</p>
+
+              {/* Action buttons */}
               {b.status === "pending" && (
                 <div className="mt-2 flex gap-2">
                   <button
@@ -90,3 +106,4 @@ export default function BookingList() {
     </div>
   );
 }
+

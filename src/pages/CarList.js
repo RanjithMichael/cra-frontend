@@ -5,6 +5,9 @@ export default function CarList() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Grab token from localStorage (assuming you store JWT there)
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchCars = async () => {
       try {
@@ -18,6 +21,27 @@ export default function CarList() {
     };
     fetchCars();
   }, []);
+
+  const handleBooking = async (carId) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/bookings",
+        {
+          carId,
+          startDate: "2026-09-15", // later replace with date picker
+          endDate: "2026-09-20",
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("Booking successful!");
+      console.log("Booking:", res.data);
+    } catch (err) {
+      console.error("Booking failed:", err);
+      alert("Booking failed");
+    }
+  };
 
   if (loading) return <p className="text-center mt-10">Loading cars...</p>;
 
@@ -43,6 +67,7 @@ export default function CarList() {
               </div>
             )}
 
+            {/* Car Details */}
             <h2 className="text-xl font-semibold mb-2">
               {car.make} {car.model}
             </h2>
@@ -55,9 +80,23 @@ export default function CarList() {
             >
               {car.available ? "Available" : "Not Available"}
             </p>
+
+            {/* Book Now Button */}
+            <button
+              onClick={() => handleBooking(car._id)}
+              disabled={!car.available}
+              className={`mt-4 px-4 py-2 rounded ${
+                car.available
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
+              }`}
+            >
+              {car.available ? "Book Now" : "Unavailable"}
+            </button>
           </div>
         ))}
       </div>
     </div>
   );
 }
+
