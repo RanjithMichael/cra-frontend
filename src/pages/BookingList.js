@@ -34,18 +34,9 @@ export default function BookingList() {
     }
   };
 
-  const handlePayment = async (booking) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        "http://localhost:5000/api/payments/create-payment-intent",
-        { bookingId: booking._id, amount: booking.payment.amount },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      window.location.href = res.data.checkoutUrl; // redirect to Stripe Checkout
-    } catch (err) {
-      alert(err.response?.data?.message || "Payment failed");
-    }
+  const calculateDays = (start, end) => {
+    const diff = new Date(end) - new Date(start);
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
   };
 
   return (
@@ -54,49 +45,58 @@ export default function BookingList() {
       {bookings.length === 0 ? (
         <p>No bookings found.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {bookings.map((b) => (
-            <div key={b._id} className="border rounded p-4 bg-white shadow">
+            <div key={b._id} className="border rounded-lg p-6 bg-white shadow-md">
               {/* Car details */}
-              <h3 className="text-lg font-semibold">
-                {b.car ? `${b.car.make} ${b.car.model}` : "Car"}
-              </h3>
-              <p><strong>Year:</strong> {b.car?.year}</p>
-              <p><strong>Price/Day:</strong> ₹{b.car?.pricePerDay}</p>
-              <p>Available: {b.car?.available ? "Yes" : "No"}</p>
-              {b.car?.image && (
-               <img
-                src={b.car.image}
-                alt={`${b.car.make} ${b.car.model}`}
-                className="w-full h-32 object-cover rounded mt-2"
-              />
-              )}
-              {/* Booking details */}
-              <p><strong>Start:</strong> {new Date(b.startDate).toLocaleDateString()}</p>
-              <p><strong>End:</strong> {new Date(b.endDate).toLocaleDateString()}</p>
-              <p><strong>Status:</strong> {b.status}</p>
+              <div className="flex items-center gap-4">
+                {b.car?.image && (
+                  <img
+                    src={b.car.image}
+                    alt={`${b.car.make} ${b.car.model}`}
+                    className="w-32 h-20 object-cover rounded"
+                  />
+                )}
+                <div>
+                  <h3 className="text-xl font-semibold">
+                    {b.car ? `${b.car.make} ${b.car.model}` : "Car"}
+                  </h3>
+                  <p className="text-gray-600">Year: {b.car?.year}</p>
+                  <p className="text-gray-600">Price/Day: ₹{b.car?.pricePerDay}</p>
+                  <p className="text-gray-600">Available: {b.car?.available ? "Yes" : "No"}</p>
+                </div>
+              </div>
 
-              {/* Payment details */}
-              <p><strong>Amount:</strong> ${b.payment?.amount} {b.payment?.currency}</p>
-              <p><strong>Payment Status:</strong> {b.payment?.status}</p>
+              {/* Booking details */}
+              <div className="mt-4">
+                <p><strong>Start:</strong> {new Date(b.startDate).toLocaleDateString()}</p>
+                <p><strong>End:</strong> {new Date(b.endDate).toLocaleDateString()}</p>
+                <p><strong>Total Days:</strong> {calculateDays(b.startDate, b.endDate)}</p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span
+                    className={`px-2 py-1 rounded text-white ${
+                      b.status === "pending"
+                        ? "bg-yellow-500"
+                        : b.status === "confirmed"
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                    }`}
+                  >
+                    {b.status}
+                  </span>
+                </p>
+              </div>
 
               {/* Action buttons */}
               {b.status === "pending" && (
-                <div className="mt-2 flex gap-2">
+                <div className="mt-4 flex gap-3">
                   <button
                     onClick={() => handleCancel(b._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                   >
                     Cancel
                   </button>
-                  {b.payment?.status === "unpaid" && (
-                    <button
-                      onClick={() => handlePayment(b)}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                    >
-                      Pay Now
-                    </button>
-                  )}
                 </div>
               )}
             </div>
@@ -106,4 +106,5 @@ export default function BookingList() {
     </div>
   );
 }
+
 
