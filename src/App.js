@@ -6,6 +6,7 @@ import CarList from "./pages/CarList";
 import BookingForm from "./pages/BookingForm";
 import BookingList from "./pages/BookingList";
 import AdminBookingList from "./pages/AdminBookingList";
+import AdminCars from "./pages/AdminCars"; 
 
 function App() {
   const [role, setRole] = useState(localStorage.getItem("role"));
@@ -24,7 +25,6 @@ function App() {
       <div className="min-h-screen bg-gray-900 text-white flex flex-col">
         <header className="text-center py-6 space-y-4">
           <h1 className="text-4xl font-bold text-blue-400">Car Rental App</h1>
-          
 
           {/* Navigation */}
           <nav className="space-x-4">
@@ -60,12 +60,20 @@ function App() {
                   My Bookings
                 </Link>
                 {role === "admin" && (
-                  <Link
-                    to="/admin/bookings"
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg font-semibold transition"
-                  >
-                    Admin Bookings
-                  </Link>
+                  <>
+                    <Link
+                      to="/admin/bookings"
+                      className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg font-semibold transition"
+                    >
+                      Admin Bookings
+                    </Link>
+                    <Link
+                      to="/admin/cars"
+                      className="px-4 py-2 bg-pink-500 hover:bg-pink-600 rounded-lg font-semibold transition"
+                    >
+                      Manage Cars
+                    </Link>
+                  </>
                 )}
                 <button
                   onClick={handleLogout}
@@ -87,6 +95,7 @@ function App() {
             <Route path="/book/:carId" element={<BookingForm />} />
             <Route path="/my-bookings" element={<BookingList />} />
             <Route path="/admin/bookings" element={<AdminBookingList />} />
+            <Route path="/admin/cars" element={<AdminCars />} /> {/* NEW route */}
             <Route
               path="/"
               element={
@@ -103,4 +112,5 @@ function App() {
 }
 
 export default App;
+
 
