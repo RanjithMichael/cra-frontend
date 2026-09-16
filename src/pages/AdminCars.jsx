@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import AddCarForm from "../components/AddCarForm";
-import CarEditForm from "../components/CarEditForm"; // import the new edit form
+import CarEditForm from "../components/CarEditForm";
 
 // CarItem component for each car
 function CarItem({ car, token, refreshCars }) {
@@ -14,7 +14,7 @@ function CarItem({ car, token, refreshCars }) {
     formData.append("image", file);
 
     try {
-      await axios.put(`/api/cars/${car._id}/image`, formData, {
+      await axios.put(`/api/cars/${car._id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

@@ -19,14 +19,11 @@ export default function AddCarForm({ token, refreshCars }) {
     setLoading(true);
     setSuccessMessage("");
     setErrorMessage("");
-
-    if (!file) {
-      setErrorMessage("❌ Please select an image before uploading.");
-      setLoading(false);
-      return;
-    }
-
+    
     const formData = new FormData();
+
+    if (file) formData.append("image", file);
+
     formData.append("name", name);
     formData.append("make", make);
     formData.append("model", model);
