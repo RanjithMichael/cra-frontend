@@ -1,101 +1,26 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import CarList from "./pages/CarList";
-import BookingForm from "./pages/BookingForm";
-import BookingList from "./pages/BookingList";
-import AdminBookingList from "./pages/AdminBookingList";
-import AdminCars from "./pages/AdminCars"; 
+import AdminDashboard from "./pages/AdminDashboard";
+import Navbar from "./components/Navbar";
+import ViewCars from "./pages/ViewCars";
+import MyBookings from "./pages/MyBookings";
 
 function App() {
-  const [role, setRole] = useState(localStorage.getItem("role"));
-  const [token, setToken] = useState(localStorage.getItem("token"));
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setToken(null);
-    setRole(null);
-    window.location.href = "/login"; // redirect to login
-  };
-
   return (
     <Router>
       <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-        <header className="text-center py-6 space-y-4">
-          <h1 className="text-4xl font-bold text-blue-400">Car Rental App</h1>
-
-          {/* Navigation */}
-          <nav className="space-x-4">
-            {!token && (
-              <>
-                <Link
-                  to="/login"
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg font-semibold transition"
-                >
-                  Register
-                </Link>
-              </>
-            )}
-
-            {token && (
-              <>
-                <Link
-                  to="/cars"
-                  className="px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-lg font-semibold transition"
-                >
-                  View Cars
-                </Link>
-                <Link
-                  to="/my-bookings"
-                  className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-semibold transition"
-                >
-                  My Bookings
-                </Link>
-                {role === "admin" && (
-                  <>
-                    <Link
-                      to="/admin/bookings"
-                      className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg font-semibold transition"
-                    >
-                      Admin Bookings
-                    </Link>
-                    <Link
-                      to="/admin/cars"
-                      className="px-4 py-2 bg-pink-500 hover:bg-pink-600 rounded-lg font-semibold transition"
-                    >
-                      Manage Cars
-                    </Link>
-                  </>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg font-semibold transition"
-                >
-                  Logout
-                </button>
-              </>
-            )}
-          </nav>
-        </header>
+        {/* Navbar */}
+        <Navbar />
 
         {/* Page Content */}
         <main className="flex-grow">
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/cars" element={<CarList />} />
-            <Route path="/book/:carId" element={<BookingForm />} />
-            <Route path="/my-bookings" element={<BookingList />} />
-            <Route path="/admin/bookings" element={<AdminBookingList />} />
-            <Route path="/admin/cars" element={<AdminCars />} /> {/* NEW route */}
+            <Route path="/admin/bookings" element={<AdminDashboard />} />
+            <Route path="/cars" element={<ViewCars />} />
+            <Route path="/my-bookings" element={<MyBookings />} />
             <Route
               path="/"
               element={
@@ -112,5 +37,3 @@ function App() {
 }
 
 export default App;
-
-
