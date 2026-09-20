@@ -5,6 +5,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import ViewCars from "./pages/ViewCars";
 import MyBookings from "./pages/MyBookings";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/cars" element={<ViewCars />} />
             <Route path="/my-bookings" element={<MyBookings />} />
+            <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
             <Route
               path="/"
               element={

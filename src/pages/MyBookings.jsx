@@ -60,22 +60,24 @@ export default function MyBookings() {
 
               return (
                 <tr key={b._id}>
-                  <td className="border p-2">
+                  <td className="border p-2 text-black">
                     {b.car ? `${b.car.make} ${b.car.model}` : "Car not linked"}
                   </td>
-                  <td className="border p-2">{b.car?.fuelType || "N/A"}</td>
-                  <td className="border p-2">
+                  <td className="border p-2 text-black">
+                    {b.car?.fuelType || "N/A"}
+                  </td>
+                  <td className="border p-2 text-black">
                     {new Date(b.startDate).toLocaleDateString()}
                   </td>
-                  <td className="border p-2">
+                  <td className="border p-2 text-black">
                     {new Date(b.endDate).toLocaleDateString()}
                   </td>
-                  <td className="border p-2">{days}</td>
-                  <td className="border p-2">{formatINR(pricePerDay)}</td>
+                  <td className="border p-2 text-black">{days}</td>
+                  <td className="border p-2 text-black">{formatINR(pricePerDay)}</td>
                   <td className="border p-2 font-semibold text-black">
                     {formatINR(totalCost)}
                   </td>
-                  <td className="border p-2">
+                  <td className="border p-2 text-black">
                     <span
                       className={`px-2 py-1 rounded text-white text-sm ${
                         b.status === "pending"

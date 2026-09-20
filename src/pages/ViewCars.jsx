@@ -13,7 +13,7 @@ export default function ViewCars() {
         });
         setCars(data);
       } catch (err) {
-        console.error("Failed to fetch cars:", err);
+        console.error("❌ Failed to fetch cars:", err);
       }
     };
     fetchCars();
@@ -26,6 +26,30 @@ export default function ViewCars() {
       currency: "INR",
     }).format(amount);
 
+  // Handle booking
+  const handleBookNow = async (carId) => {
+    try {
+      const { data } = await axios.post(
+        "/api/bookings",
+        {
+          carId,
+          startDate: new Date().toISOString().split("T")[0],
+          endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .split("T")[0],
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("✅ Booking created successfully!");
+      console.log("Booking:", data);
+    } catch (err) {
+      console.error("❌ Failed to create booking:", err);
+      alert("Booking failed. Please try again.");
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-black">🚗 Available Cars</h1>
@@ -33,9 +57,12 @@ export default function ViewCars() {
       {cars.length === 0 ? (
         <p className="text-black">No cars available.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {cars.map((car) => (
-            <div key={car._id} className="bg-white rounded shadow-md p-4">
+            <div
+              key={car._id}
+              className="flex flex-col bg-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-xl"
+            >
               <img
                 src={car.image || "/placeholder.jpg"}
                 alt={car.name}
@@ -47,14 +74,19 @@ export default function ViewCars() {
               </p>
               <p className="text-gray-700">Category: {car.category}</p>
               <p className="text-gray-700">Fuel: {car.fuelType || "N/A"}</p>
-              <p className="text-gray-700 font-semibold">
+              <p className="text-lg font-bold text-blue-600 mt-2">
                 {formatINR(car.pricePerDay)} / day
               </p>
               {car.description && (
-                <p className="text-gray-600 mt-2">{car.description}</p>
+                <p className="text-gray-600 mt-2 text-sm">{car.description}</p>
               )}
-              <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                Book Now
+
+              {/* Button aligned at bottom */}
+              <button
+                className="mt-auto w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-2 rounded hover:from-blue-700 hover:to-blue-900 transition"
+                onClick={() => handleBookNow(car._id)}
+              >
+                🚀 Book Now
               </button>
             </div>
           ))}
