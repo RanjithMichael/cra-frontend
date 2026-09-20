@@ -19,6 +19,13 @@ export default function ViewCars() {
     fetchCars();
   }, [token]);
 
+  // Helper: format INR currency
+  const formatINR = (amount) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-black">🚗 Available Cars</h1>
@@ -35,9 +42,14 @@ export default function ViewCars() {
                 className="w-full h-40 object-cover rounded mb-4"
               />
               <h2 className="text-xl font-semibold text-black">{car.name}</h2>
-              <p className="text-gray-700">{car.make} {car.model} ({car.year})</p>
+              <p className="text-gray-700">
+                {car.make} {car.model} ({car.year})
+              </p>
               <p className="text-gray-700">Category: {car.category}</p>
-              <p className="text-gray-700">₹{car.pricePerDay} / day</p>
+              <p className="text-gray-700">Fuel: {car.fuelType || "N/A"}</p>
+              <p className="text-gray-700 font-semibold">
+                {formatINR(car.pricePerDay)} / day
+              </p>
               {car.description && (
                 <p className="text-gray-600 mt-2">{car.description}</p>
               )}

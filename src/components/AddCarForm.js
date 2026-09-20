@@ -9,6 +9,7 @@ export default function AddCarForm({ token, refreshCars }) {
     year: "",
     pricePerDay: "",
     category: "",
+    fuelType: "",
     description: "",
     image: "",
   });
@@ -33,7 +34,7 @@ export default function AddCarForm({ token, refreshCars }) {
         data
       );
       setUploading(false);
-      return res.data.secure_url; // plain string
+      return res.data.secure_url;
     } catch (err) {
       console.error("Cloudinary upload failed:", err);
       setUploading(false);
@@ -51,7 +52,7 @@ export default function AddCarForm({ token, refreshCars }) {
 
       await axios.post(
         "/api/cars",
-        { ...formData, image: imageUrl }, // image is always a string
+        { ...formData, image: imageUrl },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -62,6 +63,7 @@ export default function AddCarForm({ token, refreshCars }) {
         year: "",
         pricePerDay: "",
         category: "",
+        fuelType: "",
         description: "",
         image: "",
       });
@@ -89,6 +91,18 @@ export default function AddCarForm({ token, refreshCars }) {
           <option value="Sedan">Sedan</option>
           <option value="Luxury">Luxury</option>
           <option value="SUV">SUV</option>
+          <option value="MPV">MPV</option>
+          <option value="Electric">Electric</option>
+          <option value="Budget">Budget</option>
+        </select>
+
+        {/* Fuel Type dropdown */}
+        <select name="fuelType" value={formData.fuelType} onChange={handleChange} className="border p-2 rounded text-black">
+          <option value="">Select Fuel Type</option>
+          <option value="Petrol">Petrol</option>
+          <option value="Diesel">Diesel</option>
+          <option value="Electric">Electric</option>
+          <option value="Hybrid">Hybrid</option>
         </select>
 
         {/* Description */}
@@ -119,3 +133,4 @@ export default function AddCarForm({ token, refreshCars }) {
     </form>
   );
 }
+

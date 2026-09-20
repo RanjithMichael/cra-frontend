@@ -102,6 +102,7 @@ export default function AdminDashboard() {
                 <th className="border p-2 text-black">Make</th>
                 <th className="border p-2 text-black">Model</th>
                 <th className="border p-2 text-black">Year</th>
+                <th className="border p-2 text-black">Fuel</th>
                 <th className="border p-2 text-black">Price/Day</th>
                 <th className="border p-2 text-black">Category</th>
                 <th className="border p-2 text-black">Actions</th>
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
               {cars.map((car) => (
                 <tr key={car._id}>
                   {editingCarId === car._id ? (
-                    <td colSpan={8} className="border p-4">
+                    <td colSpan={9} className="border p-4">
                       <CarEditForm
                         car={car}
                         token={token}
@@ -128,6 +129,7 @@ export default function AdminDashboard() {
                       <td className="border p-2 text-black">{car.make}</td>
                       <td className="border p-2 text-black">{car.model}</td>
                       <td className="border p-2 text-black">{car.year}</td>
+                      <td className="border p-2 text-black">{car.fuelType || "N/A"}</td>
                       <td className="border p-2 text-black">{formatINR(car.pricePerDay)}</td>
                       <td className="border p-2 text-black">{car.category}</td>
                       <td className="border p-2 flex gap-2 justify-center">
@@ -162,6 +164,7 @@ export default function AdminDashboard() {
             <thead>
               <tr className="bg-gray-200">
                 <th className="border p-2 text-black">Car</th>
+                <th className="border p-2 text-black">Fuel</th>
                 <th className="border p-2 text-black">Start Date</th>
                 <th className="border p-2 text-black">End Date</th>
                 <th className="border p-2 text-black">Days</th>
@@ -180,6 +183,7 @@ export default function AdminDashboard() {
                 return (
                   <tr key={b._id}>
                     <td className="border p-2 text-black">{b.car ? `${b.car.make} ${b.car.model}` : "Car"}</td>
+                    <td className="border p-2 text-black">{b.car?.fuelType || "N/A"}</td>
                     <td className="border p-2 text-black">{new Date(b.startDate).toLocaleDateString()}</td>
                     <td className="border p-2 text-black">{new Date(b.endDate).toLocaleDateString()}</td>
                     <td className="border p-2 text-black">{days}</td>
@@ -194,10 +198,10 @@ export default function AdminDashboard() {
                         {b.status}
                       </span>
                     </td>
-                    <td className="border p-2 flex gap-2 justify-center text-black">
+                                        <td className="border p-2 flex gap-2 justify-center text-black">
                       {b.status === "pending" && (
                         <>
-                                                    <button
+                          <button
                             onClick={() => handleUpdateStatus(b._id, "confirmed")}
                             className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
                           >

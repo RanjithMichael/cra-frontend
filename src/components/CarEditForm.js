@@ -9,8 +9,9 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     year: car.year || "",
     pricePerDay: car.pricePerDay || "",
     category: car.category || "",
+    fuelType: car.fuelType || "",
     description: car.description || "",
-    image: car.image || "", // plain string
+    image: car.image || "", 
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -50,7 +51,7 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
 
       await axios.put(
         `/api/cars/${car._id}`,
-        { ...formData, image: imageUrl }, // always string
+        { ...formData, image: imageUrl },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -78,6 +79,18 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
           <option value="Sedan">Sedan</option>
           <option value="Luxury">Luxury</option>
           <option value="SUV">SUV</option>
+          <option value="MPV">MPV</option>
+          <option value="Electric">Electric</option>
+          <option value="Budget">Budget</option>
+        </select>
+
+        {/* Fuel Type dropdown */}
+        <select name="fuelType" value={formData.fuelType} onChange={handleChange} className="border p-2 rounded text-black">
+          <option value="">Select Fuel Type</option>
+          <option value="Petrol">Petrol</option>
+          <option value="Diesel">Diesel</option>
+          <option value="Electric">Electric</option>
+          <option value="Hybrid">Hybrid</option>
         </select>
 
         {/* Description */}
@@ -93,7 +106,7 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
         {/* File upload for Cloudinary */}
         <input type="file" onChange={(e) => setFile(e.target.files[0])} className="border p-2 rounded col-span-2 text-black" />
       </div>
-            <div className="mt-4 flex gap-3">
+      <div className="mt-4 flex gap-3">
         <button
           type="submit"
           disabled={uploading}
@@ -112,4 +125,5 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     </form>
   );
 }
+
 

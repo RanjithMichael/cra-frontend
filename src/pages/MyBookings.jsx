@@ -43,6 +43,7 @@ export default function MyBookings() {
           <thead>
             <tr className="bg-gray-200">
               <th className="border p-2 text-black">Car</th>
+              <th className="border p-2 text-black">Fuel</th>
               <th className="border p-2 text-black">Start Date</th>
               <th className="border p-2 text-black">End Date</th>
               <th className="border p-2 text-black">Days</th>
@@ -62,6 +63,7 @@ export default function MyBookings() {
                   <td className="border p-2">
                     {b.car ? `${b.car.make} ${b.car.model}` : "Car not linked"}
                   </td>
+                  <td className="border p-2">{b.car?.fuelType || "N/A"}</td>
                   <td className="border p-2">
                     {new Date(b.startDate).toLocaleDateString()}
                   </td>
@@ -97,3 +99,4 @@ export default function MyBookings() {
     </div>
   );
 }
+
