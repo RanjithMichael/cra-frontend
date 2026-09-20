@@ -8,7 +8,7 @@ export default function MyBookings() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const { data } = await axios.get("/api/my-bookings", {
+        const { data } = await axios.get("/api/bookings/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBookings(data);
