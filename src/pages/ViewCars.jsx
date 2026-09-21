@@ -59,12 +59,14 @@ export default function ViewCars() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {cars.map((car) => (
+            
+
             <div
               key={car._id}
               className="flex flex-col bg-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-xl"
             >
               <img
-                src={car.image || "/placeholder.jpg"}
+                src={car.image?.url || "/placeholder.jpg"}
                 alt={car.name}
                 className="w-full h-40 object-cover rounded mb-4"
               />
