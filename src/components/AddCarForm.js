@@ -28,7 +28,7 @@ export default function AddCarForm({ token, refreshCars }) {
         data.append(key, formData[key]);
       });
       if (file) {
-        data.append("image", file); // attach file directly
+        data.append("image", file);
       }
 
       await axios.post("/api/cars", data, {
@@ -63,44 +63,53 @@ export default function AddCarForm({ token, refreshCars }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-4 rounded shadow-md mb-6"
+      className="bg-white p-6 rounded-xl shadow-lg mb-6 border border-gray-200"
     >
-      <h3 className="text-lg font-semibold mb-4 text-black">➕ Add New Car</h3>
-      <div className="grid grid-cols-2 gap-4">
+      <h3 className="text-xl font-bold mb-6 text-indigo-700 flex items-center gap-2">
+        ➕ Add New Car
+      </h3>
+      <div className="grid grid-cols-2 gap-6">
         <input
           name="name"
           value={formData.name}
           onChange={handleChange}
           placeholder="Car Name"
-          className="border p-2 rounded text-black"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         />
         <input
           name="make"
           value={formData.make}
           onChange={handleChange}
           placeholder="Make"
-          className="border p-2 rounded text-black"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         />
         <input
           name="model"
           value={formData.model}
           onChange={handleChange}
           placeholder="Model"
-          className="border p-2 rounded text-black"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         />
         <input
           name="year"
           value={formData.year}
           onChange={handleChange}
           placeholder="Year"
-          className="border p-2 rounded text-black"
+          type="number"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         />
         <input
           name="pricePerDay"
           value={formData.pricePerDay}
           onChange={handleChange}
           placeholder="Price/Day"
-          className="border p-2 rounded text-black"
+          type="number"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         />
 
         {/* Category dropdown */}
@@ -108,9 +117,12 @@ export default function AddCarForm({ token, refreshCars }) {
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className="border p-2 rounded text-black"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         >
-          <option value="">Select Category</option>
+          <option value="" disabled>
+            Select Category
+          </option>
           <option value="Hatchback">Hatchback</option>
           <option value="Sedan">Sedan</option>
           <option value="Luxury">Luxury</option>
@@ -125,13 +137,17 @@ export default function AddCarForm({ token, refreshCars }) {
           name="fuelType"
           value={formData.fuelType}
           onChange={handleChange}
-          className="border p-2 rounded text-black"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         >
-          <option value="">Select Fuel Type</option>
+          <option value="" disabled>
+            Select Fuel Type
+          </option>
           <option value="Petrol">Petrol</option>
           <option value="Diesel">Diesel</option>
           <option value="Electric">Electric</option>
           <option value="Hybrid">Hybrid</option>
+          <option value="CNG">CNG</option>
         </select>
 
         {/* Description */}
@@ -140,7 +156,7 @@ export default function AddCarForm({ token, refreshCars }) {
           value={formData.description}
           onChange={handleChange}
           placeholder="Description"
-          className="border p-2 rounded col-span-2 text-black"
+          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
           rows={3}
         />
 
@@ -148,16 +164,21 @@ export default function AddCarForm({ token, refreshCars }) {
         <input
           type="file"
           onChange={(e) => setFile(e.target.files[0])}
-          className="border p-2 rounded col-span-2 text-black"
+          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
         />
       </div>
       <button
         type="submit"
         disabled={uploading}
-        className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className={`mt-6 w-full px-4 py-3 rounded-lg font-semibold text-white transition ${
+          uploading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-indigo-600 hover:bg-indigo-700"
+        }`}
       >
         {uploading ? "Uploading..." : "Add Car"}
       </button>
     </form>
   );
 }
+

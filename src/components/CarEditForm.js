@@ -11,7 +11,7 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     category: car.category || "",
     fuelType: car.fuelType || "",
     description: car.description || "",
-    image: car.image || "", 
+    available: car.available ?? true,
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -20,61 +20,101 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const uploadImage = async () => {
-    if (!file) return null;
-    setUploading(true);
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "your_upload_preset");
-
-    try {
-      const res = await axios.post(
-        "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
-        data
-      );
-      setUploading(false);
-      return res.data.secure_url;
-    } catch (err) {
-      console.error("Cloudinary upload failed:", err);
-      setUploading(false);
-      return null;
-    }
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
     try {
-      let imageUrl = formData.image;
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
       if (file) {
-        imageUrl = await uploadImage();
+        data.append("image", file);
       }
 
-      await axios.put(
-        `/api/cars/${car._id}`,
-        { ...formData, image: imageUrl },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`/api/cars/${car._id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       refreshCars();
       onClose();
     } catch (err) {
       console.error("Failed to update car:", err);
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded shadow-md">
-      <h3 className="text-lg font-semibold mb-4 text-black">✏️ Edit Car</h3>
-      <div className="grid grid-cols-2 gap-4">
-        <input name="name" value={formData.name} onChange={handleChange} placeholder="Car Name" className="border p-2 rounded text-black" />
-        <input name="make" value={formData.make} onChange={handleChange} placeholder="Make" className="border p-2 rounded text-black" />
-        <input name="model" value={formData.model} onChange={handleChange} placeholder="Model" className="border p-2 rounded text-black" />
-        <input name="year" value={formData.year} onChange={handleChange} placeholder="Year" className="border p-2 rounded text-black" />
-        <input name="pricePerDay" value={formData.pricePerDay} onChange={handleChange} placeholder="Price/Day" className="border p-2 rounded text-black" />
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 rounded-xl shadow-lg border border-gray-200"
+    >
+      <h3 className="text-xl font-bold mb-6 text-indigo-700 flex items-center gap-2">
+        ✏️ Edit Car
+      </h3>
+      <div className="grid grid-cols-2 gap-6">
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Car Name"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        />
+        <input
+          name="make"
+          value={formData.make}
+          onChange={handleChange}
+          placeholder="Make"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        />
+        <input
+          name="model"
+          value={formData.model}
+          onChange={handleChange}
+          placeholder="Model"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        />
+        <input
+          name="year"
+          value={formData.year}
+          onChange={handleChange}
+          placeholder="Year"
+          type="number"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        />
+        <input
+          name="pricePerDay"
+          value={formData.pricePerDay}
+          onChange={handleChange}
+          placeholder="Price/Day"
+          type="number"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        />
 
         {/* Category dropdown */}
-        <select name="category" value={formData.category} onChange={handleChange} className="border p-2 rounded text-black">
-          <option value="">Select Category</option>
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="" disabled>
+            Select Category
+          </option>
           <option value="Hatchback">Hatchback</option>
           <option value="Sedan">Sedan</option>
           <option value="Luxury">Luxury</option>
@@ -85,12 +125,21 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
         </select>
 
         {/* Fuel Type dropdown */}
-        <select name="fuelType" value={formData.fuelType} onChange={handleChange} className="border p-2 rounded text-black">
-          <option value="">Select Fuel Type</option>
+        <select
+          name="fuelType"
+          value={formData.fuelType}
+          onChange={handleChange}
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="" disabled>
+            Select Fuel Type
+          </option>
           <option value="Petrol">Petrol</option>
           <option value="Diesel">Diesel</option>
           <option value="Electric">Electric</option>
           <option value="Hybrid">Hybrid</option>
+          <option value="CNG">CNG</option>
         </select>
 
         {/* Description */}
@@ -99,31 +148,39 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
           value={formData.description}
           onChange={handleChange}
           placeholder="Description"
-          className="border p-2 rounded col-span-2 text-black"
+          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
           rows={3}
         />
 
-        {/* File upload for Cloudinary */}
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} className="border p-2 rounded col-span-2 text-black" />
+        {/* File upload */}
+        <input
+          type="file"
+          onChange={handleFileChange}
+          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
+        />
       </div>
-      <div className="mt-4 flex gap-3">
-        <button
-          type="submit"
-          disabled={uploading}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          {uploading ? "Uploading..." : "Save"}
-        </button>
+
+      <div className="mt-6 flex gap-4 justify-end">
         <button
           type="button"
           onClick={onClose}
-          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+          className="bg-gray-400 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
         >
           Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={uploading}
+          className={`px-5 py-2 rounded-lg font-semibold text-white transition ${
+            uploading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
+        >
+          {uploading ? "Uploading..." : "Save Changes"}
         </button>
       </div>
     </form>
   );
 }
-
 

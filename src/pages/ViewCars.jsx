@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function ViewCars() {
   const [cars, setCars] = useState([]);
   const token = localStorage.getItem("token");
+
+  // Track selected date ranges per car
+  const [dateRanges, setDateRanges] = useState({});
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -26,17 +31,26 @@ export default function ViewCars() {
       currency: "INR",
     }).format(amount);
 
-  // Handle booking
+  // Helper: calculate days
+  const calculateDays = (start, end) => {
+    const diff = new Date(end) - new Date(start);
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
+
+  // Handle booking with selected dates
   const handleBookNow = async (carId) => {
+    const [startDate, endDate] = dateRanges[carId] || [null, null];
+    if (!startDate || !endDate) {
+      alert("⚠️ Please select a start and end date before booking.");
+      return;
+    }
     try {
       const { data } = await axios.post(
         "/api/bookings",
         {
           carId,
-          startDate: new Date().toISOString().split("T")[0],
-          endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .split("T")[0],
+          startDate: startDate.toISOString().split("T")[0],
+          endDate: endDate.toISOString().split("T")[0],
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -57,43 +71,95 @@ export default function ViewCars() {
       {cars.length === 0 ? (
         <p className="text-black">No cars available.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          {cars.map((car) => (
-            
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          {cars.map((car) => {
+            const [startDate, endDate] = dateRanges[car._id] || [null, null];
+            const days =
+              startDate && endDate ? calculateDays(startDate, endDate) : 0;
+            const totalCost = days * (car.pricePerDay || 0);
 
-            <div
-              key={car._id}
-              className="flex flex-col bg-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-xl"
-            >
-              <img
-                src={car.image?.url || "/placeholder.jpg"}
-                alt={car.name}
-                className="w-full h-40 object-cover rounded mb-4"
-              />
-              <h2 className="text-xl font-semibold text-black">{car.name}</h2>
-              <p className="text-gray-700">
-                {car.make} {car.model} ({car.year})
-              </p>
-              <p className="text-gray-700">Category: {car.category}</p>
-              <p className="text-gray-700">Fuel: {car.fuelType || "N/A"}</p>
-              <p className="text-lg font-bold text-blue-600 mt-2">
-                {formatINR(car.pricePerDay)} / day
-              </p>
-              {car.description && (
-                <p className="text-gray-600 mt-2 text-sm">{car.description}</p>
-              )}
-
-              {/* Button aligned at bottom */}
-              <button
-                className="mt-auto w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white px-4 py-2 rounded hover:from-blue-700 hover:to-blue-900 transition"
-                onClick={() => handleBookNow(car._id)}
+            return (
+              <div
+                key={car._id}
+                className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
               >
-                🚀 Book Now
-              </button>
-            </div>
-          ))}
+                <img
+                  src={
+                    car.image?.url ||
+                    `https://via.placeholder.com/400x300?text=${encodeURIComponent(
+                      car.category
+                    )}+Image`
+                  }
+                  alt={car.name}
+                  className="w-full h-48 object-cover"
+                />
+
+                <div className="p-4 flex flex-col flex-grow">
+                  <h2 className="text-xl font-bold text-gray-900">{car.name}</h2>
+                  <p className="text-gray-600">
+                    {car.make} {car.model} ({car.year})
+                  </p>
+
+                  <div className="flex gap-2 mt-2">
+                    <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-700">
+                      {car.category}
+                    </span>
+                    <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">
+                      {car.fuelType || "N/A"}
+                    </span>
+                  </div>
+
+                  <p className="text-lg font-bold text-blue-600 mt-3">
+                    {formatINR(car.pricePerDay)} / day
+                  </p>
+
+                  {car.description && (
+                    <p className="text-gray-500 mt-2 text-sm line-clamp-2">
+                      {car.description}
+                    </p>
+                  )}
+
+                  {/* DatePicker inside card */}
+                  <div className="mt-3">
+                    <DatePicker
+                      selectsRange
+                      startDate={startDate}
+                      endDate={endDate}
+                      onChange={(update) =>
+                        setDateRanges((prev) => ({ ...prev, [car._id]: update }))
+                      }
+                      isClearable
+                      className="border p-2 rounded w-full text-black"
+                      placeholderText="Select booking dates"
+                    />
+                  </div>
+
+                  {/* Live cost preview */}
+                  {days > 0 && (
+                    <div className="mt-2 text-sm text-gray-700">
+                      <p>
+                        📅 {days} day(s) selected —{" "}
+                        <span className="font-semibold text-blue-600">
+                          {formatINR(totalCost)} total
+                        </span>
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    className="mt-auto w-full bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-indigo-900 transition"
+                    onClick={() => handleBookNow(car._id)}
+                  >
+                    🚀 Book Now
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
+
+

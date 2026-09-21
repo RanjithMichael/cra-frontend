@@ -10,14 +10,14 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("cars");
   const [editingCarId, setEditingCarId] = useState(null);
 
-  // Helper: format INR currency
+  // Format INR currency
   const formatINR = (amount) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
     }).format(amount);
 
-  // Helper: calculate total days
+  // Calculate total days
   const calculateDays = (start, end) => {
     const diff = new Date(end) - new Date(start);
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
@@ -123,17 +123,32 @@ export default function AdminDashboard() {
                   ) : (
                     <>
                       <td className="border p-2">
-                        <img src={car.image || "/placeholder.jpg"} alt={car.name} className="w-20 h-14 object-cover mx-auto" />
+                        <img
+                          src={car.image?.url || "https://via.placeholder.com/120x80?text=No+Image"}
+                          alt={car.name}
+                          className="w-20 h-14 object-cover mx-auto"
+                        />
                       </td>
                       <td className="border p-2 text-black">{car.name}</td>
                       <td className="border p-2 text-black">{car.make}</td>
                       <td className="border p-2 text-black">{car.model}</td>
                       <td className="border p-2 text-black">{car.year}</td>
-                      <td className="border p-2 text-black">{car.fuelType || "N/A"}</td>
+                      <td className="border p-2 text-black">{car.fuelType}</td>
                       <td className="border p-2 text-black">{formatINR(car.pricePerDay)}</td>
                       <td className="border p-2 text-black">{car.category}</td>
                       <td className="border p-2 flex gap-2 justify-center">
-                        <button onClick={() => setEditingCarId(car._id)} className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">✏️ Edit</button>
+                        <button
+                          onClick={() => alert(`Viewing car: ${car.make} ${car.model}`)}
+                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                        >
+                          👁 View
+                        </button>
+                        <button
+                          onClick={() => setEditingCarId(car._id)}
+                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                        >
+                          ✏️ Edit
+                        </button>
                         <button
                           onClick={async () => {
                             if (!window.confirm("Delete this car?")) return;
@@ -183,23 +198,29 @@ export default function AdminDashboard() {
                 return (
                   <tr key={b._id}>
                     <td className="border p-2 text-black">{b.car ? `${b.car.make} ${b.car.model}` : "Car"}</td>
-                    <td className="border p-2 text-black">{b.car?.fuelType || "N/A"}</td>
+                    <td className="border p-2 text-black">{b.car?.fuelType}</td>
                     <td className="border p-2 text-black">{new Date(b.startDate).toLocaleDateString()}</td>
                     <td className="border p-2 text-black">{new Date(b.endDate).toLocaleDateString()}</td>
                     <td className="border p-2 text-black">{days}</td>
                     <td className="border p-2 text-black">{formatINR(pricePerDay)}</td>
                     <td className="border p-2 font-semibold text-black">{formatINR(totalCost)}</td>
-                    <td className="border p-2 text-black">
-                      <span className={`px-2 py-1 rounded text-white text-sm ${
-                        b.status === "pending" ? "bg-yellow-500" :
-                        b.status === "confirmed" ? "bg-green-600" :
-                        b.status === "cancelled" ? "bg-red-600" : "bg-gray-500"
-                      }`}>
+                                        <td className="border p-2 text-black">
+                      <span
+                        className={`px-2 py-1 rounded text-white text-sm ${
+                          b.status === "pending"
+                            ? "bg-yellow-500"
+                            : b.status === "confirmed"
+                            ? "bg-green-600"
+                            : b.status === "cancelled"
+                            ? "bg-red-600"
+                            : "bg-gray-500"
+                        }`}
+                      >
                         {b.status}
                       </span>
                     </td>
-                                        <td className="border p-2 flex gap-2 justify-center text-black">
-                      {b.status === "pending" && (
+                    <td className="border p-2 flex gap-2 justify-center text-black">
+                      {b.status === "pending" ? (
                         <>
                           <button
                             onClick={() => handleUpdateStatus(b._id, "confirmed")}
@@ -214,6 +235,28 @@ export default function AdminDashboard() {
                             ❌ Cancel
                           </button>
                         </>
+                      ) : b.status === "confirmed" ? (
+                        <button
+                          onClick={() =>
+                            alert(`Viewing booking for ${b.car?.make} ${b.car?.model}`)
+                          }
+                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                        >
+                          👁 View
+                        </button>
+                      ) : (
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm("Delete this cancelled booking?")) return;
+                            await axios.delete(`/api/bookings/${b._id}`, {
+                              headers: { Authorization: `Bearer ${token}` },
+                            });
+                            fetchBookings();
+                          }}
+                          className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                        >
+                          🗑 Delete
+                        </button>
                       )}
                     </td>
                   </tr>
@@ -226,3 +269,6 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+                      
+
