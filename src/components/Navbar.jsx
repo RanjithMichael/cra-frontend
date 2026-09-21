@@ -8,7 +8,6 @@ export default function Navbar() {
     localStorage.removeItem("token");
     navigate("/login");
   };
-
   return (
     <nav className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-6 py-4 shadow-lg">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
