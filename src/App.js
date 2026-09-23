@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import ViewCars from "./pages/ViewCars";
 import MyBookings from "./pages/MyBookings";
 import { Navigate } from "react-router-dom";
+import Homepage from "./pages/Homepage"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/cars" element={<ViewCars />} />
             <Route path="/my-bookings" element={<MyBookings />} />
             <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
+            <Route path="/" element={<Homepage />} /> 
             <Route
               path="/"
               element={

@@ -10,6 +10,7 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     pricePerDay: car.pricePerDay || "",
     category: car.category || "",
     fuelType: car.fuelType || "",
+    seats: car.seats || "",       
     description: car.description || "",
     available: car.available ?? true,
   });
@@ -103,6 +104,15 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
           required
           className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
         />
+        <input
+          name="seats"
+          value={formData.seats}
+          onChange={handleChange}
+          placeholder="No. of Seats"
+          type="number"
+          required
+          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
+        />
 
         {/* Category dropdown */}
         <select
@@ -183,4 +193,3 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     </form>
   );
 }
-

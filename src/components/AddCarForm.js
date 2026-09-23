@@ -10,13 +10,19 @@ export default function AddCarForm({ token, refreshCars }) {
     pricePerDay: "",
     category: "",
     fuelType: "",
+    seats: "",
     description: "",
+    isPopular: false, 
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -47,7 +53,9 @@ export default function AddCarForm({ token, refreshCars }) {
         pricePerDay: "",
         category: "",
         fuelType: "",
+        seats: "",
         description: "",
+        isPopular: false, // reset
       });
       setFile(null);
       refreshCars();
@@ -69,60 +77,17 @@ export default function AddCarForm({ token, refreshCars }) {
         ➕ Add New Car
       </h3>
       <div className="grid grid-cols-2 gap-6">
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Car Name"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="make"
-          value={formData.make}
-          onChange={handleChange}
-          placeholder="Make"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="model"
-          value={formData.model}
-          onChange={handleChange}
-          placeholder="Model"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="year"
-          value={formData.year}
-          onChange={handleChange}
-          placeholder="Year"
-          type="number"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="pricePerDay"
-          value={formData.pricePerDay}
-          onChange={handleChange}
-          placeholder="Price/Day"
-          type="number"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
+        {/* Inputs */}
+        <input name="name" value={formData.name} onChange={handleChange} placeholder="Car Name" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="make" value={formData.make} onChange={handleChange} placeholder="Make" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="model" value={formData.model} onChange={handleChange} placeholder="Model" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="year" value={formData.year} onChange={handleChange} placeholder="Year" type="number" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="pricePerDay" value={formData.pricePerDay} onChange={handleChange} placeholder="Price/Day" type="number" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="seats" value={formData.seats} onChange={handleChange} placeholder="No. of Seats" type="number" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
 
         {/* Category dropdown */}
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="" disabled>
-            Select Category
-          </option>
+        <select name="category" value={formData.category} onChange={handleChange} required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500">
+          <option value="" disabled>Select Category</option>
           <option value="Hatchback">Hatchback</option>
           <option value="Sedan">Sedan</option>
           <option value="Luxury">Luxury</option>
@@ -133,16 +98,8 @@ export default function AddCarForm({ token, refreshCars }) {
         </select>
 
         {/* Fuel Type dropdown */}
-        <select
-          name="fuelType"
-          value={formData.fuelType}
-          onChange={handleChange}
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="" disabled>
-            Select Fuel Type
-          </option>
+        <select name="fuelType" value={formData.fuelType} onChange={handleChange} required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500">
+          <option value="" disabled>Select Fuel Type</option>
           <option value="Petrol">Petrol</option>
           <option value="Diesel">Diesel</option>
           <option value="Electric">Electric</option>
@@ -151,29 +108,29 @@ export default function AddCarForm({ token, refreshCars }) {
         </select>
 
         {/* Description */}
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
-          rows={3}
-        />
+        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500" rows={3} />
 
         {/* File upload */}
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
-        />
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500" />
+
+        {/* Popular checkbox */}
+        <div className="col-span-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            name="isPopular"
+            checked={formData.isPopular}
+            onChange={handleChange}
+            className="h-4 w-4 text-indigo-600"
+          />
+          <label className="text-gray-700 font-medium">Mark as Popular</label>
+        </div>
       </div>
+
       <button
         type="submit"
         disabled={uploading}
         className={`mt-6 w-full px-4 py-3 rounded-lg font-semibold text-white transition ${
-          uploading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-indigo-600 hover:bg-indigo-700"
+          uploading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
         }`}
       >
         {uploading ? "Uploading..." : "Add Car"}
@@ -181,4 +138,3 @@ export default function AddCarForm({ token, refreshCars }) {
     </form>
   );
 }
-
