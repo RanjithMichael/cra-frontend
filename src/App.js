@@ -1,12 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import ViewCars from "./pages/ViewCars";
 import MyBookings from "./pages/MyBookings";
-import { Navigate } from "react-router-dom";
-import Homepage from "./pages/Homepage"
+import Homepage from "./pages/Homepage";
 
 function App() {
   return (
@@ -25,15 +24,9 @@ function App() {
             <Route path="/cars" element={<ViewCars />} />
             <Route path="/my-bookings" element={<MyBookings />} />
             <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
-            <Route path="/" element={<Homepage />} /> 
-            <Route
-              path="/"
-              element={
-                <div className="flex items-center justify-center h-full">
-                  <h2 className="text-2xl">Welcome to Car Rental App</h2>
-                </div>
-              }
-            />
+
+            {/* Homepage */}
+            <Route path="/" element={<Homepage />} />
           </Routes>
         </main>
       </div>
@@ -42,3 +35,5 @@ function App() {
 }
 
 export default App;
+
+

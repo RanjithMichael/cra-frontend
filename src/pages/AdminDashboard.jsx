@@ -105,6 +105,8 @@ export default function AdminDashboard() {
                 <th className="border p-2 text-black">Fuel</th>
                 <th className="border p-2 text-black">Price/Day</th>
                 <th className="border p-2 text-black">Category</th>
+                <th className="border p-2 text-black">Transmission</th>
+                <th className="border p-2 text-black">seats</th>
                 <th className="border p-2 text-black">Actions</th>
               </tr>
             </thead>
@@ -136,6 +138,8 @@ export default function AdminDashboard() {
                       <td className="border p-2 text-black">{car.fuelType}</td>
                       <td className="border p-2 text-black">{formatINR(car.pricePerDay)}</td>
                       <td className="border p-2 text-black">{car.category}</td>
+                      <td className="border p-2 text-black">{car.transmission || "N/A"}</td>
+                      <td className="border p-2 text-black">{car.seats}</td>
                       <td className="border p-2 flex gap-2 justify-center">
                         <button
                           onClick={() => alert(`Viewing car: ${car.make} ${car.model}`)}
@@ -174,97 +178,102 @@ export default function AdminDashboard() {
       {/* Bookings Tab */}
       {activeTab === "bookings" && (
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-black">Manage Bookings</h2>
-          <table className="w-full border-collapse border mt-6 text-black">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2 text-black">Car</th>
-                <th className="border p-2 text-black">Fuel</th>
-                <th className="border p-2 text-black">Start Date</th>
-                <th className="border p-2 text-black">End Date</th>
-                <th className="border p-2 text-black">Days</th>
-                <th className="border p-2 text-black">Price/Day</th>
-                <th className="border p-2 text-black">Total Cost</th>
-                <th className="border p-2 text-black">Status</th>
-                <th className="border p-2 text-black">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((b) => {
-                const days = calculateDays(b.startDate, b.endDate);
-                const pricePerDay = b.car?.pricePerDay || 0;
-                const totalCost = days * pricePerDay;
+  <h2 className="text-2xl font-semibold mb-4 text-black">Manage Bookings</h2>
+  <table className="w-full border-collapse border mt-6 text-sm text-black rounded-lg shadow-md">
+    <thead>
+      <tr className="bg-gray-200">
+        <th className="border p-2">Car</th>
+        <th className="border p-2">Fuel</th>
+        <th className="border p-2">Transmission</th> 
+        <th className="border p-2">Seats</th> 
+        <th className="border p-2">Start Date</th>
+        <th className="border p-2">End Date</th>
+        <th className="border p-2">Days</th>
+        <th className="border p-2">Price/Day</th>
+        <th className="border p-2">Total Cost</th>
+        <th className="border p-2">Status</th>
+        <th className="border p-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {bookings.map((b) => {
+        const days = calculateDays(b.startDate, b.endDate);
+        const pricePerDay = b.car?.pricePerDay || 0;
+        const totalCost = days * pricePerDay;
 
-                return (
-                  <tr key={b._id}>
-                    <td className="border p-2 text-black">{b.car ? `${b.car.make} ${b.car.model}` : "Car"}</td>
-                    <td className="border p-2 text-black">{b.car?.fuelType}</td>
-                    <td className="border p-2 text-black">{new Date(b.startDate).toLocaleDateString()}</td>
-                    <td className="border p-2 text-black">{new Date(b.endDate).toLocaleDateString()}</td>
-                    <td className="border p-2 text-black">{days}</td>
-                    <td className="border p-2 text-black">{formatINR(pricePerDay)}</td>
-                    <td className="border p-2 font-semibold text-black">{formatINR(totalCost)}</td>
-                                        <td className="border p-2 text-black">
-                      <span
-                        className={`px-2 py-1 rounded text-white text-sm ${
-                          b.status === "pending"
-                            ? "bg-yellow-500"
-                            : b.status === "confirmed"
-                            ? "bg-green-600"
-                            : b.status === "cancelled"
-                            ? "bg-red-600"
-                            : "bg-gray-500"
-                        }`}
-                      >
-                        {b.status}
-                      </span>
-                    </td>
-                    <td className="border p-2 flex gap-2 justify-center text-black">
-                      {b.status === "pending" ? (
-                        <>
-                          <button
-                            onClick={() => handleUpdateStatus(b._id, "confirmed")}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                          >
-                            ✅ Confirm
-                          </button>
-                          <button
-                            onClick={() => handleUpdateStatus(b._id, "cancelled")}
-                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                          >
-                            ❌ Cancel
-                          </button>
-                        </>
-                      ) : b.status === "confirmed" ? (
-                        <button
-                          onClick={() =>
-                            alert(`Viewing booking for ${b.car?.make} ${b.car?.model}`)
-                          }
-                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                        >
-                          👁 View
-                        </button>
-                      ) : (
-                        <button
-                          onClick={async () => {
-                            if (!window.confirm("Delete this cancelled booking?")) return;
-                            await axios.delete(`/api/bookings/${b._id}`, {
-                              headers: { Authorization: `Bearer ${token}` },
-                            });
-                            fetchBookings();
-                          }}
-                          className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
-                        >
-                          🗑 Delete
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </section>
+        return (
+          <tr key={b._id} className="hover:bg-gray-50">
+            <td className="border p-2">{b.car ? `${b.car.make} ${b.car.model}` : "Car"}</td>
+            <td className="border p-2">{b.car?.fuelType || "N/A"}</td>
+            <td className="border p-2">{b.car?.transmission || "N/A"}</td>
+            <td className="border p-2">{b.car?.seats || "N/A"}</td>
+            <td className="border p-2">{new Date(b.startDate).toLocaleDateString()}</td>
+            <td className="border p-2">{new Date(b.endDate).toLocaleDateString()}</td>
+            <td className="border p-2">{days}</td>
+            <td className="border p-2">{formatINR(pricePerDay)}</td>
+            <td className="border p-2 font-semibold">{formatINR(totalCost)}</td>
+            <td className="border p-2">
+              <span
+                className={`px-2 py-1 rounded text-white text-sm ${
+                  b.status === "pending"
+                    ? "bg-yellow-500"
+                    : b.status === "confirmed"
+                    ? "bg-green-600"
+                    : b.status === "cancelled"
+                    ? "bg-red-600"
+                    : "bg-gray-500"
+                }`}
+              >
+                {b.status}
+              </span>
+            </td>
+            <td className="border p-2 flex gap-2 justify-center">
+              {b.status === "pending" ? (
+                <>
+                  <button
+                    onClick={() => handleUpdateStatus(b._id, "confirmed")}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                  >
+                    ✅ Confirm
+                  </button>
+                  <button
+                    onClick={() => handleUpdateStatus(b._id, "cancelled")}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  >
+                    ❌ Cancel
+                  </button>
+                </>
+              ) : b.status === "confirmed" ? (
+                <button
+                  onClick={() =>
+                    alert(`Viewing booking for ${b.car?.make} ${b.car?.model}`)
+                  }
+                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                >
+                  👁 View
+                </button>
+              ) : (
+                <button
+                  onClick={async () => {
+                    if (!window.confirm("Delete this cancelled booking?")) return;
+                    await axios.delete(`/api/bookings/${b._id}`, {
+                      headers: { Authorization: `Bearer ${token}` },
+                    });
+                    fetchBookings();
+                  }}
+                  className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                >
+                  🗑 Delete
+                </button>
+              )}
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</section>
+
       )}
     </div>
   );

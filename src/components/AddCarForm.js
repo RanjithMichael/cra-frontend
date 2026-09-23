@@ -10,6 +10,7 @@ export default function AddCarForm({ token, refreshCars }) {
     pricePerDay: "",
     category: "",
     fuelType: "",
+    transmission: "",   
     seats: "",
     description: "",
     isPopular: false, 
@@ -53,9 +54,10 @@ export default function AddCarForm({ token, refreshCars }) {
         pricePerDay: "",
         category: "",
         fuelType: "",
+        transmission: "",   
         seats: "",
         description: "",
-        isPopular: false, // reset
+        isPopular: false,
       });
       setFile(null);
       refreshCars();
@@ -104,7 +106,13 @@ export default function AddCarForm({ token, refreshCars }) {
           <option value="Diesel">Diesel</option>
           <option value="Electric">Electric</option>
           <option value="Hybrid">Hybrid</option>
-          <option value="CNG">CNG</option>
+        </select>
+
+        {/* Transmission dropdown ✅ */}
+        <select name="transmission" value={formData.transmission} onChange={handleChange} required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500">
+          <option value="" disabled>Select Transmission</option>
+          <option value="Manual">Manual</option>
+          <option value="Automatic">Automatic</option>
         </select>
 
         {/* Description */}

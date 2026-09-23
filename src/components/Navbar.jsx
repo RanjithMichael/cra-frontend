@@ -19,7 +19,7 @@ export default function Navbar() {
               to="/"
               className="hover:text-yellow-300 transition-colors duration-200"
             >
-              HomePage
+              Homepage
             </Link>
             <Link
               to="/my-bookings"

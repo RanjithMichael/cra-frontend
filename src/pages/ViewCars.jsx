@@ -100,12 +100,19 @@ export default function ViewCars() {
                     {car.make} {car.model} ({car.year})
                   </p>
 
-                  <div className="flex gap-2 mt-2">
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-2 mt-2">
                     <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-700">
                       {car.category}
                     </span>
                     <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">
                       {car.fuelType || "N/A"}
+                    </span>
+                    <span className="px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-700">
+                      {car.transmission || "N/A"}
+                    </span>
+                    <span className="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-700">
+                      {car.seats ? `${car.seats} Seats` : "N/A"}
                     </span>
                   </div>
 
@@ -161,5 +168,3 @@ export default function ViewCars() {
     </div>
   );
 }
-
-

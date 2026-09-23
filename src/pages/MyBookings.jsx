@@ -13,7 +13,7 @@ export default function MyBookings() {
         });
         setBookings(data);
       } catch (err) {
-        console.error("Failed to fetch my bookings:", err);
+        console.error("❌ Failed to fetch my bookings:", err);
       }
     };
     fetchBookings();
@@ -39,17 +39,19 @@ export default function MyBookings() {
       {bookings.length === 0 ? (
         <p className="text-black">You have no bookings yet.</p>
       ) : (
-        <table className="w-full border-collapse border mt-6">
+        <table className="w-full border-collapse border mt-6 text-sm">
           <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-2 text-black">Car</th>
-              <th className="border p-2 text-black">Fuel</th>
-              <th className="border p-2 text-black">Start Date</th>
-              <th className="border p-2 text-black">End Date</th>
-              <th className="border p-2 text-black">Days</th>
-              <th className="border p-2 text-black">Price/Day</th>
-              <th className="border p-2 text-black">Total Cost</th>
-              <th className="border p-2 text-black">Status</th>
+            <tr className="bg-gray-200 text-black">
+              <th className="border p-2">Car</th>
+              <th className="border p-2">Fuel</th>
+              <th className="border p-2">Transmission</th> 
+              <th className="border p-2">Seats</th> 
+              <th className="border p-2">Start Date</th>
+              <th className="border p-2">End Date</th>
+              <th className="border p-2">Days</th>
+              <th className="border p-2">Price/Day</th>
+              <th className="border p-2">Total Cost</th>
+              <th className="border p-2">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -59,12 +61,18 @@ export default function MyBookings() {
               const totalCost = days * pricePerDay;
 
               return (
-                <tr key={b._id}>
+                <tr key={b._id} className="hover:bg-gray-50">
                   <td className="border p-2 text-black">
                     {b.car ? `${b.car.make} ${b.car.model}` : "Car not linked"}
                   </td>
                   <td className="border p-2 text-black">
                     {b.car?.fuelType || "N/A"}
+                  </td>
+                  <td className="border p-2 text-black">
+                    {b.car?.transmission || "N/A"}
+                  </td>
+                  <td className="border p-2 text-black">
+                    {b.car?.seats || "N/A"}
                   </td>
                   <td className="border p-2 text-black">
                     {new Date(b.startDate).toLocaleDateString()}
@@ -73,7 +81,9 @@ export default function MyBookings() {
                     {new Date(b.endDate).toLocaleDateString()}
                   </td>
                   <td className="border p-2 text-black">{days}</td>
-                  <td className="border p-2 text-black">{formatINR(pricePerDay)}</td>
+                  <td className="border p-2 text-black">
+                    {formatINR(pricePerDay)}
+                  </td>
                   <td className="border p-2 font-semibold text-black">
                     {formatINR(totalCost)}
                   </td>

@@ -10,15 +10,21 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
     pricePerDay: car.pricePerDay || "",
     category: car.category || "",
     fuelType: car.fuelType || "",
-    seats: car.seats || "",       
+    transmission: car.transmission || "", 
+    seats: car.seats || "",
     description: car.description || "",
     available: car.available ?? true,
+    isPopular: car.isPopular || false, 
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
   const handleFileChange = (e) => {
@@ -62,69 +68,16 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
         ✏️ Edit Car
       </h3>
       <div className="grid grid-cols-2 gap-6">
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Car Name"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="make"
-          value={formData.make}
-          onChange={handleChange}
-          placeholder="Make"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="model"
-          value={formData.model}
-          onChange={handleChange}
-          placeholder="Model"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="year"
-          value={formData.year}
-          onChange={handleChange}
-          placeholder="Year"
-          type="number"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="pricePerDay"
-          value={formData.pricePerDay}
-          onChange={handleChange}
-          placeholder="Price/Day"
-          type="number"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          name="seats"
-          value={formData.seats}
-          onChange={handleChange}
-          placeholder="No. of Seats"
-          type="number"
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        />
+        <input name="name" value={formData.name} onChange={handleChange} placeholder="Car Name" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="make" value={formData.make} onChange={handleChange} placeholder="Make" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="model" value={formData.model} onChange={handleChange} placeholder="Model" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="year" value={formData.year} onChange={handleChange} placeholder="Year" type="number" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="pricePerDay" value={formData.pricePerDay} onChange={handleChange} placeholder="Price/Day" type="number" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
+        <input name="seats" value={formData.seats} onChange={handleChange} placeholder="No. of Seats" type="number" required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500" />
 
         {/* Category dropdown */}
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="" disabled>
-            Select Category
-          </option>
+        <select name="category" value={formData.category} onChange={handleChange} required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500">
+          <option value="" disabled>Select Category</option>
           <option value="Hatchback">Hatchback</option>
           <option value="Sedan">Sedan</option>
           <option value="Luxury">Luxury</option>
@@ -135,61 +88,50 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
         </select>
 
         {/* Fuel Type dropdown */}
-        <select
-          name="fuelType"
-          value={formData.fuelType}
-          onChange={handleChange}
-          required
-          className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="" disabled>
-            Select Fuel Type
-          </option>
+        <select name="fuelType" value={formData.fuelType} onChange={handleChange} required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500">
+          <option value="" disabled>Select Fuel Type</option>
           <option value="Petrol">Petrol</option>
           <option value="Diesel">Diesel</option>
           <option value="Electric">Electric</option>
           <option value="Hybrid">Hybrid</option>
-          <option value="CNG">CNG</option>
+        </select>
+
+        {/* Transmission dropdown*/}
+        <select name="transmission" value={formData.transmission} onChange={handleChange} required className="border p-3 rounded-lg text-black focus:ring-2 focus:ring-indigo-500">
+          <option value="" disabled>Select Transmission</option>
+          <option value="Manual">Manual</option>
+          <option value="Automatic">Automatic</option>
         </select>
 
         {/* Description */}
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
-          rows={3}
-        />
+        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500" rows={3} />
 
         {/* File upload */}
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500"
-        />
+        <input type="file" onChange={handleFileChange} className="border p-3 rounded-lg col-span-2 text-black focus:ring-2 focus:ring-indigo-500" />
+
+        {/* Popular checkbox */}
+        <div className="col-span-2 flex items-center gap-2">
+          <input
+            type="checkbox"
+            name="isPopular"
+            checked={formData.isPopular}
+            onChange={handleChange}
+            className="h-4 w-4 text-indigo-600"
+          />
+          <label className="text-gray-700 font-medium">Mark as Popular</label>
+        </div>
       </div>
 
       <div className="mt-6 flex gap-4 justify-end">
-        <button
-          type="button"
-          onClick={onClose}
-          className="bg-gray-400 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
-        >
+        <button type="button" onClick={onClose} className="bg-gray-400 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition">
           Cancel
         </button>
-        <button
-          type="submit"
-          disabled={uploading}
-          className={`px-5 py-2 rounded-lg font-semibold text-white transition ${
-            uploading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
+        <button type="submit" disabled={uploading} className={`px-5 py-2 rounded-lg font-semibold text-white transition ${uploading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}>
           {uploading ? "Uploading..." : "Save Changes"}
         </button>
       </div>
     </form>
   );
 }
+
+
