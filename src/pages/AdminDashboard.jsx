@@ -38,7 +38,7 @@ export default function AdminDashboard() {
   // Fetch bookings
   const fetchBookings = useCallback(async () => {
     try {
-      const { data } = await axios.get("/api/bookings", {
+      const { data } = await axios.get("https://cra-backend-production-eebb.up.railway.app/api/bookings", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBookings(data);

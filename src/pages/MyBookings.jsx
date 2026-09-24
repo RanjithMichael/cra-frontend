@@ -10,7 +10,7 @@ export default function MyBookings() {
     const fetchBookings = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get("/api/bookings/my", {
+        const { data } = await axios.get("https://cra-backend-production-eebb.up.railway.app/api/bookings/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("API response:", data);

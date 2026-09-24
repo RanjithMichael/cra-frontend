@@ -38,7 +38,7 @@ export default function AddCarForm({ token, refreshCars }) {
         data.append("image", file);
       }
 
-      await axios.post("/api/cars", data, {
+      await axios.post("https://cra-backend-production-eebb.up.railway.app/api/cars", data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

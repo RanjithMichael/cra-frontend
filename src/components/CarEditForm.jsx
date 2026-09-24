@@ -43,7 +43,7 @@ export default function CarEditForm({ car, token, refreshCars, onClose }) {
         data.append("image", file);
       }
 
-      await axios.put(`/api/cars/${car._id}`, data, {
+      await axios.put(`https://cra-backend-production-eebb.up.railway.app/api/cars/${car._id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

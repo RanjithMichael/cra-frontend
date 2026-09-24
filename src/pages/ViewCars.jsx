@@ -21,7 +21,7 @@ export default function ViewCars() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const { data } = await axios.get("/api/cars", {
+        const { data } = await axios.get("https://cra-backend-production-eebb.up.railway.app/api/cars", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

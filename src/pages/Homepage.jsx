@@ -14,7 +14,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchPopularCars = async () => {
       try {
-        const res = await axios.get("/api/cars?popular=true"); // 👈 backend filter
+        const res = await axios.get("https://cra-backend-production-eebb.up.railway.app/api/cars?popular=true"); // 👈 backend filter
         setPopularCars(res.data);
       } catch (err) {
         console.error("Failed to fetch popular cars:", err);
