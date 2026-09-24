@@ -87,93 +87,101 @@ export default function AdminDashboard() {
           📑 Bookings
         </button>
       </div>
+    {/* Cars Tab */}
+{activeTab === "cars" && (
+  <section>
+    <h2 className="text-2xl font-semibold mb-4 text-black">Manage Cars</h2>
+    <AddCarForm token={token} refreshCars={fetchCars} />
 
-      {/* Cars Tab */}
-      {activeTab === "cars" && (
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-black">Manage Cars</h2>
-          <AddCarForm token={token} refreshCars={fetchCars} />
+    <table className="w-full border-collapse border mt-6">
+      <thead>
+        <tr className="bg-gray-200">
+          <th className="border p-2 text-black">Image</th>
+          <th className="border p-2 text-black">Name</th>
+          <th className="border p-2 text-black">Make</th>
+          <th className="border p-2 text-black">Model</th>
+          <th className="border p-2 text-black">Year</th>
+          <th className="border p-2 text-black">Fuel</th>
+          <th className="border p-2 text-black">Price/Day</th>
+          <th className="border p-2 text-black">Category</th>
+          <th className="border p-2 text-black">Transmission</th>
+          <th className="border p-2 text-black">Seats</th>
+          <th className="border p-2 text-black">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array.isArray(cars) && cars.length > 0 ? (
+          cars.map((car) => (
+            <tr key={car._id}>
+              {editingCarId === car._id ? (
+                <td colSpan={11} className="border p-4">
+                  <CarEditForm
+                    car={car}
+                    token={token}
+                    refreshCars={fetchCars}
+                    onClose={() => setEditingCarId(null)}
+                  />
+                </td>
+              ) : (
+                <>
+                  <td className="border p-2">
+                    <img
+                      src={car.image?.url || "https://via.placeholder.com/120x80?text=No+Image"}
+                      alt={car.name}
+                      className="w-20 h-14 object-cover mx-auto"
+                    />
+                  </td>
+                  <td className="border p-2 text-black">{car.name}</td>
+                  <td className="border p-2 text-black">{car.make}</td>
+                  <td className="border p-2 text-black">{car.model}</td>
+                  <td className="border p-2 text-black">{car.year}</td>
+                  <td className="border p-2 text-black">{car.fuelType}</td>
+                  <td className="border p-2 text-black">{formatINR(car.pricePerDay)}</td>
+                  <td className="border p-2 text-black">{car.category}</td>
+                  <td className="border p-2 text-black">{car.transmission || "N/A"}</td>
+                  <td className="border p-2 text-black">{car.seats}</td>
+                  <td className="border p-2 flex gap-2 justify-center">
+                    <button
+                      onClick={() => alert(`Viewing car: ${car.make} ${car.model}`)}
+                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    >
+                      👁 View
+                    </button>
+                    <button
+                      onClick={() => setEditingCarId(car._id)}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!window.confirm("Delete this car?")) return;
+                        await axios.delete(`/api/cars/${car._id}`, {
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                        fetchCars();
+                      }}
+                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    >
+                      🗑 Delete
+                    </button>
+                  </td>
+                </>
+              )}
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={11} className="text-center text-gray-600 p-4">
+              No cars available.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </section>
+)}
 
-          <table className="w-full border-collapse border mt-6">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2 text-black">Image</th>
-                <th className="border p-2 text-black">Name</th>
-                <th className="border p-2 text-black">Make</th>
-                <th className="border p-2 text-black">Model</th>
-                <th className="border p-2 text-black">Year</th>
-                <th className="border p-2 text-black">Fuel</th>
-                <th className="border p-2 text-black">Price/Day</th>
-                <th className="border p-2 text-black">Category</th>
-                <th className="border p-2 text-black">Transmission</th>
-                <th className="border p-2 text-black">seats</th>
-                <th className="border p-2 text-black">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cars.map((car) => (
-                <tr key={car._id}>
-                  {editingCarId === car._id ? (
-                    <td colSpan={9} className="border p-4">
-                      <CarEditForm
-                        car={car}
-                        token={token}
-                        refreshCars={fetchCars}
-                        onClose={() => setEditingCarId(null)}
-                      />
-                    </td>
-                  ) : (
-                    <>
-                      <td className="border p-2">
-                        <img
-                          src={car.image?.url || "https://via.placeholder.com/120x80?text=No+Image"}
-                          alt={car.name}
-                          className="w-20 h-14 object-cover mx-auto"
-                        />
-                      </td>
-                      <td className="border p-2 text-black">{car.name}</td>
-                      <td className="border p-2 text-black">{car.make}</td>
-                      <td className="border p-2 text-black">{car.model}</td>
-                      <td className="border p-2 text-black">{car.year}</td>
-                      <td className="border p-2 text-black">{car.fuelType}</td>
-                      <td className="border p-2 text-black">{formatINR(car.pricePerDay)}</td>
-                      <td className="border p-2 text-black">{car.category}</td>
-                      <td className="border p-2 text-black">{car.transmission || "N/A"}</td>
-                      <td className="border p-2 text-black">{car.seats}</td>
-                      <td className="border p-2 flex gap-2 justify-center">
-                        <button
-                          onClick={() => alert(`Viewing car: ${car.make} ${car.model}`)}
-                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                        >
-                          👁 View
-                        </button>
-                        <button
-                          onClick={() => setEditingCarId(car._id)}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          onClick={async () => {
-                            if (!window.confirm("Delete this car?")) return;
-                            await axios.delete(`/api/cars/${car._id}`, {
-                              headers: { Authorization: `Bearer ${token}` },
-                            });
-                            fetchCars();
-                          }}
-                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                        >
-                          🗑 Delete
-                        </button>
-                      </td>
-                    </>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      )}
 
       {/* Bookings Tab */}
       {activeTab === "bookings" && (
