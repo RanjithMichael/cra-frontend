@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import toast from "react-hot-toast";
+
 
 export default function HomePage() {
   const [popularCars, setPopularCars] = useState([]);
@@ -20,17 +20,6 @@ export default function HomePage() {
     };
     fetchPopularCars();
   }, []);
-
-  const offers = [
-    { title: "Short Trip Offer", discount: "5% OFF", code: "STMB5", details: "Use code STMB5 and get 5% off upto ₹500." },
-    { title: "Special 5 Day Offer", discount: "10% OFF", code: "STMB10", details: "Use code STMB10 and get 10% off upto ₹1000." },
-    { title: "Long Trip Offer", discount: "15% OFF", code: "STMB15", details: "Use code STMB15 and get 15% off upto ₹2000." },
-  ];
-
-  const copyCode = (code) => {
-    navigator.clipboard.writeText(code);
-    toast.success(`Promo code "${code}" copied! 🎉`);
-  };
 
   // FAQ data
   const faqs = [
@@ -74,52 +63,107 @@ export default function HomePage() {
       </section>
 
       {/* Popular Cars */}
-      <main className="p-8">
-        <h2 className="text-2xl font-bold text-indigo-700 mb-6">🔥 Popular Cars</h2>
-        {loading ? (
-          <p className="text-gray-600">Loading popular cars...</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {popularCars.map((car) => (
-              <div key={car._id} className="bg-white rounded-xl shadow-md border hover:shadow-lg transition flex h-56">
-                <div className="w-1/2 h-full">
-                  <img src={car.image?.url || "/images/placeholder.png"} alt={car.name} className="w-full h-full object-cover rounded-l-xl" />
-                </div>
-                <div className="w-1/2 p-6 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 truncate">{car.name}</h3>
-                    <p className="text-gray-600 font-medium">{car.make} {car.model}</p>
-                    <div className="mt-2 space-y-1 text-sm text-gray-700">
-                      <p><span className="font-semibold">Fuel:</span> {car.fuelType}</p>
-                      <p><span className="font-semibold">Transmission:</span> {car.transmission}</p>
-                      <p><span className="font-semibold">Seats:</span> {car.seats}</p>
-                    </div>
-                  </div>
-                  <p className="mt-3 text-blue-600 font-bold text-lg">₹{car.pricePerDay.toLocaleString()} / day</p>
-                </div>
-              </div>
-            ))}
+<main className="p-8">
+  <h2 className="text-2xl font-bold text-indigo-700 mb-6">🔥 Popular Cars</h2>
+  {loading ? (
+    <p className="text-gray-600">Loading popular cars...</p>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {popularCars.map((car) => (
+        <Link
+          key={car._id}
+          to={`/view-cars?carId=${car._id}`} // ✅ redirect with carId
+          className="bg-white rounded-xl shadow-md border hover:shadow-lg transition flex h-56 cursor-pointer"
+        >
+          {/* Left side: Image */}
+          <div className="w-1/2 h-full">
+            <img
+              src={car.image?.url || "/images/placeholder.png"}
+              alt={car.name}
+              className="w-full h-full object-cover rounded-l-xl"
+            />
           </div>
-        )}
-      </main>
 
-      {/* Offers Section */}
-      <section className="bg-gray-50 py-10 px-8">
-        <h2 className="text-2xl font-bold text-indigo-700 mb-6">🎁 Offers</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {offers.map((offer, idx) => (
-            <div key={idx} className="bg-white shadow-md rounded-lg p-6 border">
-              <h3 className="text-lg font-semibold">{offer.title}</h3>
-              <p className="text-green-600 font-bold">{offer.discount}</p>
-              <p className="text-gray-600">{offer.details}</p>
-              <div className="mt-3 flex items-center gap-2">
-                <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md font-mono">{offer.code}</span>
-                <button onClick={() => copyCode(offer.code)} className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition">Copy</button>
+          {/* Right side: Details */}
+          <div className="w-1/2 p-6 flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 truncate">
+                {car.name}
+              </h3>
+              <p className="text-gray-600 font-medium">
+                {car.make} {car.model}
+              </p>
+              <div className="mt-2 space-y-1 text-sm text-gray-700">
+                <p><span className="font-semibold">Fuel:</span> {car.fuelType}</p>
+                <p><span className="font-semibold">Transmission:</span> {car.transmission}</p>
+                <p><span className="font-semibold">Seats:</span> {car.seats}</p>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+            <p className="mt-3 text-blue-600 font-bold text-lg">
+              ₹{car.pricePerDay.toLocaleString()} / day
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  )}
+</main>
+
+
+      {/* Featured Destinations */}
+      <section className="bg-gray-50 py-10 px-8">
+  <h2 className="text-2xl font-bold text-indigo-700 mb-6">🌍 Featured Destinations</h2>
+  <div className="grid md:grid-cols-3 gap-6">
+    {/* Destination 1 */}
+    <Link
+      to="/view-cars?destination=ooty"
+      className="bg-white shadow-md rounded-lg p-6 border text-center cursor-pointer hover:shadow-lg transition"
+    >
+      <img
+        src="https://res-console.cloudinary.com/naqamlzv/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/T290eS1DdXJ2ZS1Sb2FkLTE=/template_primary"
+        alt="Ooty"
+        className="w-full h-40 object-cover rounded-md mb-4"
+      />
+      <h3 className="text-lg font-semibold">Ooty</h3>
+      <p className="text-gray-600 text-sm mt-2">
+        A scenic hill station in Tamil Nadu, perfect for weekend getaways.
+      </p>
+    </Link>
+
+    {/* Destination 2 */}
+    <Link
+      to="/view-cars?destination=pondicherry"
+      className="bg-white shadow-md rounded-lg p-6 border text-center cursor-pointer hover:shadow-lg transition"
+    >
+      <img
+        src="https://res-console.cloudinary.com/naqamlzv/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/U2NlbmljLWRyaXZlLWFsb25nLUVhc3QtQ29hc3QtUm9hZC0xLTEwMjR4Njgz/template_primary"
+        alt="Pondicherry"
+        className="w-full h-40 object-cover rounded-md mb-4"
+      />
+      <h3 className="text-lg font-semibold">Pondicherry</h3>
+      <p className="text-gray-600 text-sm mt-2">
+        Coastal charm with French architecture and serene beaches.
+      </p>
+    </Link>
+
+    {/* Destination 3 */}
+    <Link
+      to="/view-cars?destination=kerala"
+      className="bg-white shadow-md rounded-lg p-6 border text-center cursor-pointer hover:shadow-lg transition"
+    >
+      <img
+        src="https://res-console.cloudinary.com/naqamlzv/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/SU1HXzIwMjMwNjI0XzAwMTcwMy03Njh4MTAyNA==/template_primary"
+        alt="munnar gap road"
+        className="w-full h-40 object-cover rounded-md mb-4"
+      />
+      <h3 className="text-lg font-semibold">Munnar Gap Road</h3>
+      <p className="text-gray-600 text-sm mt-2">
+        Scenic drives through the hills of Munnar — a perfect getaway.
+      </p>
+    </Link>
+  </div>
+</section>
+
 
       {/* Why Choose Us Section */}
       <section className="bg-white py-10 px-8">

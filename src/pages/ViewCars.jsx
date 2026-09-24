@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -6,9 +7,13 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function ViewCars() {
   const [cars, setCars] = useState([]);
   const token = localStorage.getItem("token");
-
-  // Track selected date ranges per car
   const [dateRanges, setDateRanges] = useState({});
+  const [searchParams] = useSearchParams();
+  const selectedCarId = searchParams.get("carId");
+  const destination = searchParams.get("destination"); // ✅ new param
+
+  // Refs to scroll into view
+  const carRefs = useRef({});
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -16,28 +21,37 @@ export default function ViewCars() {
         const { data } = await axios.get("/api/cars", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setCars(data);
+
+        // ✅ Filter by destination if provided
+        if (destination) {
+          const filtered = data.filter((car) =>
+            car.category?.toLowerCase().includes(destination.toLowerCase())
+          );
+          setCars(filtered.length > 0 ? filtered : data); // fallback to all cars if none match
+        } else {
+          setCars(data);
+        }
       } catch (err) {
         console.error("❌ Failed to fetch cars:", err);
       }
     };
     fetchCars();
-  }, [token]);
+  }, [token, destination]);
 
-  // Helper: format INR currency
+  useEffect(() => {
+    if (selectedCarId && carRefs.current[selectedCarId]) {
+      carRefs.current[selectedCarId].scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [cars, selectedCarId]);
+
   const formatINR = (amount) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(amount);
+    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(amount);
 
-  // Helper: calculate days
   const calculateDays = (start, end) => {
     const diff = new Date(end) - new Date(start);
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
   };
 
-  // Handle booking with selected dates
   const handleBookNow = async (carId) => {
     const [startDate, endDate] = dateRanges[carId] || [null, null];
     if (!startDate || !endDate) {
@@ -52,9 +66,7 @@ export default function ViewCars() {
           startDate: startDate.toISOString().split("T")[0],
           endDate: endDate.toISOString().split("T")[0],
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("✅ Booking created successfully!");
       console.log("Booking:", data);
@@ -74,21 +86,21 @@ export default function ViewCars() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {cars.map((car) => {
             const [startDate, endDate] = dateRanges[car._id] || [null, null];
-            const days =
-              startDate && endDate ? calculateDays(startDate, endDate) : 0;
+            const days = startDate && endDate ? calculateDays(startDate, endDate) : 0;
             const totalCost = days * (car.pricePerDay || 0);
 
             return (
               <div
                 key={car._id}
-                className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
+                ref={(el) => (carRefs.current[car._id] = el)}
+                className={`flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 ${
+                  car._id === selectedCarId ? "ring-4 ring-indigo-500" : "hover:scale-105"
+                }`}
               >
                 <img
                   src={
                     car.image?.url ||
-                    `https://via.placeholder.com/400x300?text=${encodeURIComponent(
-                      car.category
-                    )}+Image`
+                    `https://via.placeholder.com/400x300?text=${encodeURIComponent(car.category)}+Image`
                   }
                   alt={car.name}
                   className="w-full h-48 object-cover"
@@ -121,9 +133,7 @@ export default function ViewCars() {
                   </p>
 
                   {car.description && (
-                    <p className="text-gray-500 mt-2 text-sm line-clamp-2">
-                      {car.description}
-                    </p>
+                    <p className="text-gray-500 mt-2 text-sm line-clamp-2">{car.description}</p>
                   )}
 
                   {/* DatePicker inside card */}

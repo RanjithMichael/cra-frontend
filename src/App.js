@@ -21,7 +21,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/admin/bookings" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/cars" element={<ViewCars />} />
+            <Route path="/view-cars" element={<ViewCars />} />   {/* ✅ fixed route */}
             <Route path="/my-bookings" element={<MyBookings />} />
             <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
 
@@ -35,5 +35,6 @@ function App() {
 }
 
 export default App;
+
 
 
