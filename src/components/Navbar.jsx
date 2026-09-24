@@ -6,7 +6,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/"); // 👈 redirect to HomePage after logout
+    navigate("/"); // redirect to HomePage after logout
   };
 
   return (
@@ -21,6 +21,7 @@ export default function Navbar() {
             >
               Homepage
             </Link>
+            
             <Link
               to="/my-bookings"
               className="hover:text-yellow-300 transition-colors duration-200"
@@ -51,6 +52,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
-
-

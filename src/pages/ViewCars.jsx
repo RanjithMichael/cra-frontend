@@ -3,14 +3,17 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Spinner from "../components/Spinner";
+
 
 export default function ViewCars() {
   const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
   const [dateRanges, setDateRanges] = useState({});
   const [searchParams] = useSearchParams();
   const selectedCarId = searchParams.get("carId");
-  const destination = searchParams.get("destination"); // ✅ new param
+  const destination = searchParams.get("destination");
 
   // Refs to scroll into view
   const carRefs = useRef({});
@@ -22,7 +25,7 @@ export default function ViewCars() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        // ✅ Filter by destination if provided
+        //Filter by destination if provided
         if (destination) {
           const filtered = data.filter((car) =>
             car.category?.toLowerCase().includes(destination.toLowerCase())
@@ -33,6 +36,8 @@ export default function ViewCars() {
         }
       } catch (err) {
         console.error("❌ Failed to fetch cars:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCars();
@@ -80,7 +85,12 @@ export default function ViewCars() {
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-black">🚗 Available Cars</h1>
 
-      {cars.length === 0 ? (
+      {loading ? (
+        <>
+          <Spinner />
+          <p className="text-black">Loading cars...</p>
+        </>
+      ) : cars.length === 0 ? (
         <p className="text-black">No cars available.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
