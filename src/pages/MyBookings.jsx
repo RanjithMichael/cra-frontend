@@ -3,17 +3,31 @@ import axios from "axios";
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
+        setLoading(true);
         const { data } = await axios.get("/api/bookings/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setBookings(data);
+        console.log("API response:", data);
+
+        // ✅ Ensure we always set an array
+        if (Array.isArray(data)) {
+          setBookings(data);
+        } else if (Array.isArray(data.bookings)) {
+          setBookings(data.bookings);
+        } else {
+          setBookings([]);
+        }
       } catch (err) {
         console.error("❌ Failed to fetch my bookings:", err);
+        setBookings([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchBookings();
@@ -36,7 +50,9 @@ export default function MyBookings() {
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-black">📑 My Bookings</h1>
 
-      {bookings.length === 0 ? (
+      {loading ? (
+        <p className="text-black">Loading your bookings...</p>
+      ) : bookings.length === 0 ? (
         <p className="text-black">You have no bookings yet.</p>
       ) : (
         <table className="w-full border-collapse border mt-6 text-sm">
@@ -44,8 +60,8 @@ export default function MyBookings() {
             <tr className="bg-gray-200 text-black">
               <th className="border p-2">Car</th>
               <th className="border p-2">Fuel</th>
-              <th className="border p-2">Transmission</th> 
-              <th className="border p-2">Seats</th> 
+              <th className="border p-2">Transmission</th>
+              <th className="border p-2">Seats</th>
               <th className="border p-2">Start Date</th>
               <th className="border p-2">End Date</th>
               <th className="border p-2">Days</th>
@@ -65,15 +81,9 @@ export default function MyBookings() {
                   <td className="border p-2 text-black">
                     {b.car ? `${b.car.make} ${b.car.model}` : "Car not linked"}
                   </td>
-                  <td className="border p-2 text-black">
-                    {b.car?.fuelType || "N/A"}
-                  </td>
-                  <td className="border p-2 text-black">
-                    {b.car?.transmission || "N/A"}
-                  </td>
-                  <td className="border p-2 text-black">
-                    {b.car?.seats || "N/A"}
-                  </td>
+                  <td className="border p-2 text-black">{b.car?.fuelType || "N/A"}</td>
+                  <td className="border p-2 text-black">{b.car?.transmission || "N/A"}</td>
+                  <td className="border p-2 text-black">{b.car?.seats || "N/A"}</td>
                   <td className="border p-2 text-black">
                     {new Date(b.startDate).toLocaleDateString()}
                   </td>
@@ -81,12 +91,8 @@ export default function MyBookings() {
                     {new Date(b.endDate).toLocaleDateString()}
                   </td>
                   <td className="border p-2 text-black">{days}</td>
-                  <td className="border p-2 text-black">
-                    {formatINR(pricePerDay)}
-                  </td>
-                  <td className="border p-2 font-semibold text-black">
-                    {formatINR(totalCost)}
-                  </td>
+                  <td className="border p-2 text-black">{formatINR(pricePerDay)}</td>
+                  <td className="border p-2 font-semibold text-black">{formatINR(totalCost)}</td>
                   <td className="border p-2 text-black">
                     <span
                       className={`px-2 py-1 rounded text-white text-sm ${
@@ -111,3 +117,4 @@ export default function MyBookings() {
     </div>
   );
 }
+
