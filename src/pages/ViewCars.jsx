@@ -65,7 +65,7 @@ export default function ViewCars() {
     }
     try {
       const { data } = await axios.post(
-        "/api/bookings",
+        "https://cra-backend-production-eebb.up.railway.app/api/bookings",
         {
           carId,
           startDate: startDate.toISOString().split("T")[0],
