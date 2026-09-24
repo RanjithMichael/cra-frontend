@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   // Fetch cars
   const fetchCars = useCallback(async () => {
     try {
-      const { data } = await axios.get("/api/cars", {
+      const { data } = await axios.get("https://cra-backend-production-eebb.up.railway.app/api/cars", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCars(data);
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   // Update booking status
   const handleUpdateStatus = async (id, status) => {
     try {
-      await axios.patch(`/api/bookings/${id}/status`, { status }, {
+      await axios.patch(`https://cra-backend-production-eebb.up.railway.app/api/bookings/${id}/status`, { status }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchBookings();
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
                     <button
                       onClick={async () => {
                         if (!window.confirm("Delete this car?")) return;
-                        await axios.delete(`/api/cars/${car._id}`, {
+                        await axios.delete(`https://cra-backend-production-eebb.up.railway.app/api/cars/${car._id}`, {
                           headers: { Authorization: `Bearer ${token}` },
                         });
                         fetchCars();
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={async () => {
                     if (!window.confirm("Delete this cancelled booking?")) return;
-                    await axios.delete(`/api/bookings/${b._id}`, {
+                    await axios.delete(`https://cra-backend-production-eebb.up.railway.app/api/bookings/${b._id}`, {
                       headers: { Authorization: `Bearer ${token}` },
                     });
                     fetchBookings();
