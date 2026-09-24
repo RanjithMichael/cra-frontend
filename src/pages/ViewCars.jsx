@@ -82,109 +82,109 @@ export default function ViewCars() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-black">🚗 Available Cars</h1>
+  <div className="p-6 bg-gray-100 min-h-screen">
+    <h1 className="text-3xl font-bold mb-6 text-black">🚗 Available Cars</h1>
 
-      {loading ? (
-        <>
-          <Spinner />
-          <p className="text-black">Loading cars...</p>
-        </>
-      ) : cars.length === 0 ? (
-        <p className="text-black">No cars available.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-          {cars.map((car) => {
-            const [startDate, endDate] = dateRanges[car._id] || [null, null];
-            const days = startDate && endDate ? calculateDays(startDate, endDate) : 0;
-            const totalCost = days * (car.pricePerDay || 0);
+    {loading ? (
+      <>
+        <Spinner />
+        <p className="text-black">Loading cars...</p>
+      </>
+    ) : Array.isArray(cars) && cars.length > 0 ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        {cars.map((car) => {
+          const [startDate, endDate] = dateRanges[car._id] || [null, null];
+          const days = startDate && endDate ? calculateDays(startDate, endDate) : 0;
+          const totalCost = days * (car.pricePerDay || 0);
 
-            return (
-              <div
-                key={car._id}
-                ref={(el) => (carRefs.current[car._id] = el)}
-                className={`flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 ${
-                  car._id === selectedCarId ? "ring-4 ring-indigo-500" : "hover:scale-105"
-                }`}
-              >
-                <img
-                  src={
-                    car.image?.url ||
-                    `https://via.placeholder.com/400x300?text=${encodeURIComponent(car.category)}+Image`
-                  }
-                  alt={car.name}
-                  className="w-full h-48 object-cover"
-                />
+          return (
+            <div
+              key={car._id}
+              ref={(el) => (carRefs.current[car._id] = el)}
+              className={`flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 ${
+                car._id === selectedCarId ? "ring-4 ring-indigo-500" : "hover:scale-105"
+              }`}
+            >
+              <img
+                src={
+                  car.image?.url ||
+                  `https://via.placeholder.com/400x300?text=${encodeURIComponent(car.category)}+Image`
+                }
+                alt={car.name}
+                className="w-full h-48 object-cover"
+              />
 
-                <div className="p-4 flex flex-col flex-grow">
-                  <h2 className="text-xl font-bold text-gray-900">{car.name}</h2>
-                  <p className="text-gray-600">
-                    {car.make} {car.model} ({car.year})
-                  </p>
+              <div className="p-4 flex flex-col flex-grow">
+                <h2 className="text-xl font-bold text-gray-900">{car.name}</h2>
+                <p className="text-gray-600">
+                  {car.make} {car.model} ({car.year})
+                </p>
 
-                  {/* Badges */}
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-700">
-                      {car.category}
-                    </span>
-                    <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">
-                      {car.fuelType || "N/A"}
-                    </span>
-                    <span className="px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-700">
-                      {car.transmission || "N/A"}
-                    </span>
-                    <span className="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-700">
-                      {car.seats ? `${car.seats} Seats` : "N/A"}
-                    </span>
-                  </div>
-
-                  <p className="text-lg font-bold text-blue-600 mt-3">
-                    {formatINR(car.pricePerDay)} / day
-                  </p>
-
-                  {car.description && (
-                    <p className="text-gray-500 mt-2 text-sm line-clamp-2">{car.description}</p>
-                  )}
-
-                  {/* DatePicker inside card */}
-                  <div className="mt-3">
-                    <DatePicker
-                      selectsRange
-                      startDate={startDate}
-                      endDate={endDate}
-                      onChange={(update) =>
-                        setDateRanges((prev) => ({ ...prev, [car._id]: update }))
-                      }
-                      isClearable
-                      className="border p-2 rounded w-full text-black"
-                      placeholderText="Select booking dates"
-                    />
-                  </div>
-
-                  {/* Live cost preview */}
-                  {days > 0 && (
-                    <div className="mt-2 text-sm text-gray-700">
-                      <p>
-                        📅 {days} day(s) selected —{" "}
-                        <span className="font-semibold text-blue-600">
-                          {formatINR(totalCost)} total
-                        </span>
-                      </p>
-                    </div>
-                  )}
-
-                  <button
-                    className="mt-auto w-full bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-indigo-900 transition"
-                    onClick={() => handleBookNow(car._id)}
-                  >
-                    🚀 Book Now
-                  </button>
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-700">
+                    {car.category}
+                  </span>
+                  <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">
+                    {car.fuelType || "N/A"}
+                  </span>
+                  <span className="px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-700">
+                    {car.transmission || "N/A"}
+                  </span>
+                  <span className="px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-700">
+                    {car.seats ? `${car.seats} Seats` : "N/A"}
+                  </span>
                 </div>
+
+                <p className="text-lg font-bold text-blue-600 mt-3">
+                  {formatINR(car.pricePerDay)} / day
+                </p>
+
+                {car.description && (
+                  <p className="text-gray-500 mt-2 text-sm line-clamp-2">{car.description}</p>
+                )}
+
+                {/* DatePicker inside card */}
+                <div className="mt-3">
+                  <DatePicker
+                    selectsRange
+                    startDate={startDate}
+                    endDate={endDate}
+                    onChange={(update) =>
+                      setDateRanges((prev) => ({ ...prev, [car._id]: update }))
+                    }
+                    isClearable
+                    className="border p-2 rounded w-full text-black"
+                    placeholderText="Select booking dates"
+                  />
+                </div>
+
+                {/* Live cost preview */}
+                {days > 0 && (
+                  <div className="mt-2 text-sm text-gray-700">
+                    <p>
+                      📅 {days} day(s) selected —{" "}
+                      <span className="font-semibold text-blue-600">
+                        {formatINR(totalCost)} total
+                      </span>
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  className="mt-auto w-full bg-gradient-to-r from-indigo-600 to-indigo-800 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-indigo-900 transition"
+                  onClick={() => handleBookNow(car._id)}
+                >
+                  🚀 Book Now
+                </button>
               </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <p className="text-black">No cars available.</p>
+    )}
+  </div>
+);
 }
