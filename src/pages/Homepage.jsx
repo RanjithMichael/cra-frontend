@@ -103,22 +103,22 @@ export default function HomePage() {
   </div>
 </section>
 
-
-      {/* Popular Cars */}
+{/* Popular Cars */}
 <main className="p-8">
   <h2 className="text-2xl font-bold text-indigo-700 mb-6">🔥 Popular Cars</h2>
+
   {loading ? (
     <>
       <Spinner />
       <div className="text-gray-600">Loading...</div>
       <p className="text-gray-600">Loading popular cars...</p>
     </>
-  ) : (
+  ) : Array.isArray(popularCars) && popularCars.length > 0 ? (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {popularCars.map((car) => (
         <Link
           key={car._id}
-          to={`/view-cars?carId=${car._id}`} // ✅ redirect with carId
+          to={`/view-cars?carId=${car._id}`}
           className="bg-white rounded-xl shadow-md border hover:shadow-lg transition flex h-56 cursor-pointer"
         >
           {/* Left side: Image */}
@@ -146,14 +146,17 @@ export default function HomePage() {
               </div>
             </div>
             <p className="mt-3 text-blue-600 font-bold text-lg">
-              ₹{car.pricePerDay.toLocaleString()} / day
+              ₹{car.pricePerDay?.toLocaleString()} / day
             </p>
           </div>
         </Link>
       ))}
     </div>
+  ) : (
+    <div className="text-gray-600">No popular cars available at the moment.</div>
   )}
 </main>
+
 
 
       {/* Featured Destinations */}
