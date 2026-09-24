@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Spinner from "../components/Spinner";
+import { FaCarSide, FaTools, FaRoad, FaHeadset } from "react-icons/fa";
+
 
 export default function HomePage() {
   const [popularCars, setPopularCars] = useState([]);
@@ -51,39 +53,56 @@ export default function HomePage() {
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 text-center">
-        <h1 className="text-4xl font-extrabold mb-4">Welcome to RV Self-Rental Cars</h1>
-        <p className="text-lg mb-6">Find the best cars at affordable daily rates</p>
+<section
+  className="relative text-white py-16 text-center bg-cover bg-center"
+  style={{
+    backgroundImage:
+      "url('https://res.cloudinary.com/naqamlzv/image/upload/v1790261198/Mustang_Ford.webp')",
+  }}
+>
+  {/* Overlay for readability */}
+  <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-indigo-700/70"></div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          {/* Always show View Cars */}
+  {/* Content */}
+  <div className="relative z-10">
+    <h1 className="text-4xl font-extrabold mb-4">
+      Welcome to RV Self-Rental Cars
+    </h1>
+    <p className="text-lg mb-6">
+      Find the best cars at affordable daily rates
+    </p>
+
+    {/* Action Buttons */}
+    <div className="flex justify-center gap-4 mt-6 flex-wrap">
+      {/* Always show View Cars */}
+      <Link
+        to="/view-cars"
+        className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition flex items-center gap-2"
+      >
+        🚗 View Cars
+      </Link>
+
+      {/* Show Login/Register only if NOT logged in */}
+      {!token && (
+        <>
           <Link
-            to="/view-cars"
-            className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition"
+            to="/login"
+            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
           >
-            🚗 View Cars
+            Login
           </Link>
+          <Link
+            to="/register"
+            className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition"
+          >
+            Register
+          </Link>
+        </>
+      )}
+    </div>
+  </div>
+</section>
 
-          {/* Show Login/Register only if NOT logged in */}
-          {!token && (
-            <>
-              <Link
-                to="/login"
-                className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
-      </section>
 
       {/* Popular Cars */}
 <main className="p-8">
@@ -147,7 +166,7 @@ export default function HomePage() {
       className="bg-white shadow-md rounded-lg p-6 border text-center cursor-pointer hover:shadow-lg transition"
     >
       <img
-        src="https://res-console.cloudinary.com/naqamlzv/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/T290eS1DdXJ2ZS1Sb2FkLTE=/template_primary"
+        src="https://res.cloudinary.com/naqamlzv/image/upload/v1790237090/Ooty-Curve-Road-1.jpg"
         alt="Ooty"
         className="w-full h-40 object-cover rounded-md mb-4"
       />
@@ -163,7 +182,7 @@ export default function HomePage() {
       className="bg-white shadow-md rounded-lg p-6 border text-center cursor-pointer hover:shadow-lg transition"
     >
       <img
-        src="https://res-console.cloudinary.com/naqamlzv/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/U2NlbmljLWRyaXZlLWFsb25nLUVhc3QtQ29hc3QtUm9hZC0xLTEwMjR4Njgz/template_primary"
+        src="https://res.cloudinary.com/naqamlzv/image/upload/v1790237087/Scenic-drive-along-East-Coast-Road-1-1024x683.webp"
         alt="Pondicherry"
         className="w-full h-40 object-cover rounded-md mb-4"
       />
@@ -179,7 +198,7 @@ export default function HomePage() {
       className="bg-white shadow-md rounded-lg p-6 border text-center cursor-pointer hover:shadow-lg transition"
     >
       <img
-        src="https://res-console.cloudinary.com/naqamlzv/thumbnails/transform/v1/image/upload/Y19maWxsLGhfMjAwLHdfMjAw/v1/SU1HXzIwMjMwNjI0XzAwMTcwMy03Njh4MTAyNA==/template_primary"
+        src="https://res.cloudinary.com/naqamlzv/image/upload/v1790237086/IMG_20230624_001703-768x1024.webp"
         alt="munnar gap road"
         className="w-full h-40 object-cover rounded-md mb-4"
       />
@@ -196,19 +215,26 @@ export default function HomePage() {
       <section className="bg-white py-10 px-8">
         <h2 className="text-2xl font-bold text-indigo-700 mb-6">🚗 Why Choose RV Cars?</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white shadow-md rounded-lg p-6 border"><h3 className="text-lg font-semibold">Home delivery & return</h3><p className="text-gray-600">Doorstep delivery, at your preferred location and time.</p></div>
-                    <div className="bg-white shadow-md rounded-lg p-6 border">
-            <h3 className="text-lg font-semibold">Well maintained cars</h3>
-            <p className="text-gray-600">Serviced regularly; inspection done before each trip.</p>
-          </div>
-          <div className="bg-white shadow-md rounded-lg p-6 border">
-            <h3 className="text-lg font-semibold">Flexible pricing plans</h3>
-            <p className="text-gray-600">Choose Your Drive: Fixed KM or Unlimited KM.</p>
-          </div>
-          <div className="bg-white shadow-md rounded-lg p-6 border">
-            <h3 className="text-lg font-semibold">24x7 support</h3>
-            <p className="text-gray-600">Round-the-clock assistance whenever you need help.</p>
-          </div>
+          <div className="bg-white shadow-md rounded-lg p-6 text-center text-black">
+  <FaCarSide className="text-blue-500 text-3xl mx-auto mb-4" />
+  <p>Doorstep delivery, at your preferred location and time.</p>
+</div>
+
+<div className="bg-white shadow-md rounded-lg p-6 text-center text-black">
+  <FaTools className="text-green-500 text-3xl mx-auto mb-4" />
+  <p>Serviced regularly; inspection done before each trip.</p>
+</div>
+
+<div className="bg-white shadow-md rounded-lg p-6 text-center text-black">
+  <FaRoad className="text-orange-500 text-3xl mx-auto mb-4" />
+  <p>Choose Your Drive: Fixed KM or Unlimited KM.</p>
+</div>
+
+<div className="bg-white shadow-md rounded-lg p-6 text-center text-black">
+  <FaHeadset className="text-purple-500 text-3xl mx-auto mb-4" />
+  <p>Round-the-clock assistance whenever you need help.</p>
+</div>
+
         </div>
       </section>
 
